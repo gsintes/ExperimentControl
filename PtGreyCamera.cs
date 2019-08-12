@@ -4,20 +4,22 @@ using FlyCapture2Managed;
 
 namespace ExperimentControl
 {
+    /// <summary>
+    /// Enable the control of the point grey camera.
+    /// </summary>
     class PtGreyCamera
 
     {
         private ManagedCamera cam;
         
+        /// <summary>
+        ///Initialize a point Grey Camera, it take the first that it detect if their is more than one. 
+        /// </summary>
+        /// <exception cref="NoCameraDetectedException">Thrown if no camera is detected.</exception>
         public PtGreyCamera()
         {
-
-            
-
             ManagedBusManager busMgr = new ManagedBusManager();
             uint numCameras = busMgr.GetNumOfCameras();
-
-
 
             // Finish if there are no cameras
             if (numCameras == 0)
@@ -32,6 +34,10 @@ namespace ExperimentControl
             cam.Connect(guid);
             busMgr.Dispose();
         }
+        /// <summary>
+        /// Get the information about the library used
+        /// </summary>
+        /// <returns>The library info</returns>
         public static string GetBuildInfo()
         {
             FC2Version version = ManagedUtilities.libraryVersion;
@@ -43,6 +49,10 @@ namespace ExperimentControl
             string newString = newStr.ToString();
             return newString;
         }
+        /// <summary>
+        /// Get the information about the camera.
+        /// </summary>
+        /// <returns>Camera info </returns>
         public string GetCameraInfo()
         {
             CameraInfo camInfo = cam.GetCameraInfo();
@@ -56,7 +66,10 @@ namespace ExperimentControl
 
             return newStr.ToString();
         }
-
+        /// <summary>
+        /// Check if the camera can be triggered by a software
+        /// </summary>
+        /// <returns>True if it can, false if not</returns>
         private bool CheckSoftwareTriggerPresence()
         {
             const uint TriggerInquiry = 0x530;
@@ -69,8 +82,11 @@ namespace ExperimentControl
 
             return true;
         }
-
-        private bool PollForTriggerReady(ManagedCamera cam)
+        /// <summary>
+        /// Poll to checked if the trigger is ready
+        /// </summary>
+        /// <returns>True if ready, false if not</returns>
+        private bool PollForTriggerReady()
         {
             const uint SoftwareTrigger = 0x62C;
 
@@ -83,7 +99,10 @@ namespace ExperimentControl
 
             return true;
         }
-
+        /// <summary>
+        /// Trigger a picture and give a boolean confirming that it worked.
+        /// </summary>
+        /// <returns>True if the trigger worked, false if not.</returns>
         private bool FireSoftwareTrigger()
         {
             const uint SoftwareTrigger = 0x62C;
@@ -93,12 +112,16 @@ namespace ExperimentControl
 
             return true;
         }
-         
 
-        public void Snap() // To thing of a possible separation to avoid setting  everything all the time
+        ///<summary>
+        ///Take a picture and save it in file name
+        /// </summary>  
+        /// <param name="fileName">File name where the picture is going to be saved> Must be a correct path</param>
+        /// <exception cref="SoftwareTriggerNotSupportedException">Thrown when the camera doesn't support software triggering.</exception>
+        /// <exception cref="ExternalTriggerNotSupportedException">Thrown when the camera doesn't support external triggering.</exception>
+        /// <exception cref="TriggerFailedException">Thrown when the triggering had failed and the picture hasn't been taken.</exception>
+        public void Snap(string fileName) // To thing of a possible separation to avoid setting  everything all the time
         {
-
-
             bool useSoftwareTrigger = true;
 
             // Power on the camera
@@ -203,7 +226,7 @@ namespace ExperimentControl
             {
                 // Retrieve an image
                 cam.RetrieveBuffer(rawImage);
-                rawImage.Save("C:/Users/gs656local/Documents/Test/test.bmp");
+                rawImage.Save(fileName);
             }
             catch (FC2Exception ex)
             {
@@ -223,12 +246,13 @@ namespace ExperimentControl
         }
 
         #region Set properties 
+
+        ///<summary>
+        ///Set the shutter time to the value shutter
+        ///</summary>
+        ///<param name="shutter">Duration of the shutter given in ms.</param>
         public void SetShutter(float shutter)
         {
-            ///<summary>
-            ///Set the shutter time to the value shutter
-            ///</summary>
-            ///<param name="shutter">Duration of the shutter given in ms.</param>
             CameraProperty prop = new CameraProperty
             {
                 type = PropertyType.Shutter,
@@ -240,13 +264,12 @@ namespace ExperimentControl
             cam.SetProperty(prop);
 
         }
-
+        ///<summary>
+        ///Set the frame rate to the value frm
+        ///</summary>
+        ///<param name="frm">Frame rate given in fps. Optional, default 35fps.</param>
         public void SetFrameRate(float frm=35)
         {
-            ///<summary>
-            ///Set the shutter time to the value shutter
-            ///</summary>
-            ///<param name="frm">Frame rate given in fps. Optional, default 35fps.</param>
             CameraProperty prop = new CameraProperty
             {
                 type = PropertyType.FrameRate,
@@ -258,14 +281,30 @@ namespace ExperimentControl
             cam.SetProperty(prop);
 
         }
+        ///<summary>
+        ///Set the brightness.
+        ///</summary>
+        ///<param name="brightness">Brightness given in %. Optional, default 0%.</param>
+        public void SetBrightness(float brightness = 0)
+        {
+            CameraProperty prop = new CameraProperty
+            {
+                type = PropertyType.Brightness,
+                onOff = true,
+                autoManualMode = false,
+                absControl = true,
+                absValue = brightness
+            };
+            cam.SetProperty(prop);
 
+        }
+        ///<summary>
+        ///Set the gain time to the value gain
+        ///</summary>
+        ///<param name="gain">Gain set to the camera in dB. Optional, default value=0</param>
+        ///
         public void SetGain(float gain=0)
         {
-            ///<summary>
-            ///Set the gain time to the value gain
-            ///</summary>
-            ///<param name="gain">Gain set to the camera in dB. Optional, default value=0</param>
-            ///
             CameraProperty prop = new CameraProperty
             {
                 type = PropertyType.Gain,
@@ -277,6 +316,21 @@ namespace ExperimentControl
             cam.SetProperty(prop);
 
         }
+        ///<summary>
+        ///Set the auto exposure.
+        ///</summary>
+        public void SetAutoExposure()
+        {
+            CameraProperty prop = new CameraProperty
+            {
+                type = PropertyType.AutoExposure,
+                onOff = true,
+                autoManualMode = true
+            };
+            cam.SetProperty(prop);
+
+        }
+
         #endregion
     }
 }

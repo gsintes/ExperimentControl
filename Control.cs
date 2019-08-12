@@ -5,9 +5,13 @@ using System.Timers;
 
 namespace ExperimentControl
 {
+    /// <summary>
+    /// Control the experiment
+    /// </summary>
     class Control
     {
         #region Attributes declaration 
+
         private Task shutterControl;
         private Task lampRelayControl;
         private readonly Task redLampControl;
@@ -25,6 +29,9 @@ namespace ExperimentControl
         #endregion
 
         #region Constructors
+        /// <summary>
+        /// Initialize the control class by setting the timers, creating the channels and a Point Grey camera
+        /// </summary>
         public Control()
         {
             SetTimer();
@@ -59,16 +66,13 @@ namespace ExperimentControl
         #endregion
 
         #region Methods
-
+        ///<summary>
+        ///Create 2 timers one with a period of 12 hours, one with 1h.
+        ///Timers disabled at the begining 
+        ///Timers that re run automatically
+        ///</summary>
         private void SetTimer()
         {
-            ///<summary>
-            ///Create 2 timers one with a period of 12 hours, one with 1h.
-            ///Timers disabled at the begining 
-            ///Timers that re run automatically
-            ///</summary>
-
-            // Create 2 timer with a two second interval.
             this.timerD = new System.Timers.Timer();
             timerD.Interval = 12 * 3600 * 1000;// 12h in ms
 
@@ -85,98 +89,95 @@ namespace ExperimentControl
             timerO.Enabled = false;
 
         }
-
+        ///<summary>
+        ///Return the state of the shutter
+        ///True if open
+        ///False if not
+        /// </summary>
         public bool GetShutterState()
         {
-            ///<summary>
-            ///Return the state of the shutter
-            ///True if open
-            ///False if not
-            /// </summary>
             return shutterState;
         }
-
+        ///<summary>
+        ///Return the state of the main lamp
+        ///True if open
+        ///False if not
+        /// </summary>
         public bool GetLampState()
         {
-            ///<summary>
-            ///Return the state of the main lamp
-            ///True if open
-            ///False if not
-            /// </summary>
             return lampState;
         }
+        ///<summary>
+        ///Return the state of the red lamp
+        ///True if open
+        ///False if not
+        /// </summary>
         public bool GetRedLampState()
         {
-            ///<summary>
-            ///Return the state of the red lamp
-            ///True if open
-            ///False if not
-            /// </summary>
             return redLampState;
         }
+
+        ///<summary>
+        ///Open the shutter by putting P0.0 at HIGH
+        /// </summary>
         private void ShutterOn()
         {
-            ///<summary>
-            ///Open the shutter by putting P0.0 at HIGH
-            /// </summary>
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(shutterControl.Stream);
             writer.WriteSingleSampleSingleLine(true, true);
             shutterState = true;
         }
-
+        ///<summary>
+        ///Close the shutter by putting P0.0 at LOW
+        /// </summary>
         private void ShutterOff()
         {
-            ///<summary>
-            ///Close the shutter by putting P0.0 at LOW
-            /// </summary>
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(shutterControl.Stream);
             writer.WriteSingleSampleSingleLine(true, false);
             shutterState = false;
         }
-
+        ///<summary>
+        ///Turn off the red lamp by putting P0.2 at LOW
+        /// </summary>
         public void RedLampOff()
         {
-            ///<summary>
-            ///Turn off the red lamp by putting P0.2 at LOW
-            /// </summary>
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
             writer.WriteSingleSampleSingleLine(true, false);
             redLampState = false;
         }
-
+        ///<summary>
+        ///Turn on the red lamp by putting P0.2 at LOW
+        /// </summary>
         public void RedLampOn()
         {
-            ///<summary>
-            ///Turn on the red lamp by putting P0.2 at LOW
-            /// </summary>
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
             writer.WriteSingleSampleSingleLine(true, true);
             redLampState = true;
         }
 
+        ///<summary>
+        ///Turn on the main lamp by putting P0.1 at HIGH
+        /// </summary>
         private void LampOn()
         {
-            ///<summary>
-            ///Turn on the main lamp by putting P0.1 at HIGH
-            /// </summary>
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
             writer.WriteSingleSampleSingleLine(true, true);
             lampState = true;
         }
+        ///<summary>
+        ///Turn off the red lamp by putting P0.1 at LOW
+        /// </summary>
         private void LampOff()
         {
-            ///<summary>
-            ///Turn off the red lamp by putting P0.1 at LOW
-            /// </summary>
             DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
             writer.WriteSingleSampleSingleLine(true, false);
             lampState = false;
         }
+
+        ///<summary>
+        ///Start the experiment by starting the timers, turning the main lamp ON, putting the shutter and the red lamp at  LOW. It takes a picture with the Point Grey+ red Light.
+        /// </summary>
         public void Start()
         {
-            ///<summary>
-            ///Start the experiment by starting the timers, turning the main lamp ON, putting the shutter and the red lamp at  LOW. It takes a picture with the Point Grey+ red Light.
-            /// </summary>
             countDay = 0;
             timerD.Start();
             timerO.Start();
@@ -188,11 +189,12 @@ namespace ExperimentControl
 
         }
 
+        ///<summary>
+        ///Stop the experiment by putting everything at LOW, and stopping the timers
+        /// </summary>
         public void Stop()
         {
-            ///<summary>
-            ///Stop the experiment by putting everything at LOW, and stopping the timers
-            /// </summary>
+            
             countDay = 0;
             timerD.Stop();
             timerO.Stop();
@@ -201,8 +203,12 @@ namespace ExperimentControl
             ShutterOff();
 
         }
-
-        private void OnTimedEventD(Object source, ElapsedEventArgs e) //every 12h turn on or off the light for day/night cycle
+        /// <summary>
+        /// Every 12h turn on or off the light for day/night cycle
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void OnTimedEventD(Object source, ElapsedEventArgs e) 
         {
             countDay++;
             if (countDay % 2 == 0)
@@ -215,34 +221,32 @@ namespace ExperimentControl
             }
         }
 
+        ///<summary>
+        ///Take a picture of the whole tank using the point grey camera as configurated and the red lamp,
+        ///Take care of everything (light+camera).
+        /// </summary>
         private void TankPicture()
         {
-            ///<summary>
-            ///Take a picture of the whole tank using the point grey camera as configurated and the red lamp,
-            ///Take care of everything (light+camera).
-            /// </summary>
             RedLampOn();
             Thread.Sleep(5000); //wait 5s to be sure it is stable
 
-            ptGreyCamera.Snap();
+            ptGreyCamera.Snap("C:/Users/gs656local/Documents/Test/test.bmp");//argument to be changed
             Thread.Sleep(1000); // wait 1s to be sure the picture is taken
             RedLampOff();
         }
+        ///<summary>
+        ///Take a picture on the Nikon with the settings given on the (physical) camera
+        /// </summary>
         private void NikonSnap()
         {
-            ///<summary>
-            ///Take a picture on the Nikon with the settings given on the (physical) camera
-            /// </summary>
-            /// 
+            
             //to be implemented
         }
+        ///<summary>
+        ///Open the laser shutter and take 10 picutres with the Nikon to visualize the flow and then close the shutter.
+        /// </summary>
         private void FlowVisualization()
         {
-            ///<summary>
-            ///Open the laser shutter and take 10 picutres with the Nikon to visualizer the flow and then close the shutter.
-            /// </summary>
-
-
             ShutterOn();
             Thread.Sleep(2000);//wait 2s to be sure it is stable
 
@@ -253,13 +257,13 @@ namespace ExperimentControl
             }
             ShutterOff();
         }
+        ///<summary>
+        ///Every hour, as a response to the tick of timerO, we turn take a picture with the point grey and the red light, then 10 pictures with the nikon and the laser.
+        ///</summary>
         private void OnTimedEventO(Object source, ElapsedEventArgs e)
         {
-            ///<summary>
-            ///Every hour, as a response to the tick of timerO, we turn take a picture with the point grey and the red light, then 10 pictures with the nikon and the laser.
-            ///</summary>
-
             TankPicture();
+            Thread.Sleep(2000);
             FlowVisualization();
 
         }
