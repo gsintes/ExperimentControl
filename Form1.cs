@@ -14,7 +14,7 @@ namespace ExperimentControl
 
             control = new Control();
             InitializeComponent();
-            Console.WriteLine("Hello");
+            
             refreshTimer.Interval = 100;
             refreshTimer.Start();
             

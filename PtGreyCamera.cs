@@ -7,6 +7,31 @@ namespace ExperimentControl
     class PtGreyCamera
 
     {
+        private ManagedCamera cam;
+        
+        public PtGreyCamera()
+        {
+
+            
+
+            ManagedBusManager busMgr = new ManagedBusManager();
+            uint numCameras = busMgr.GetNumOfCameras();
+
+
+
+            // Finish if there are no cameras
+            if (numCameras == 0)
+            {
+                throw new NoCameraDetectedException();
+            }
+
+            ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
+
+            cam = new ManagedCamera();
+
+            cam.Connect(guid);
+            busMgr.Dispose();
+        }
         public static string GetBuildInfo()
         {
             FC2Version version = ManagedUtilities.libraryVersion;
@@ -18,8 +43,9 @@ namespace ExperimentControl
             string newString = newStr.ToString();
             return newString;
         }
-        public static string GetCameraInfo(CameraInfo camInfo)
+        public string GetCameraInfo()
         {
+            CameraInfo camInfo = cam.GetCameraInfo();
             StringBuilder newStr = new StringBuilder();
             newStr.Append("\n*** CAMERA INFORMATION ***\n");
             newStr.AppendFormat("Serial number - {0}\n", camInfo.serialNumber);
@@ -31,7 +57,7 @@ namespace ExperimentControl
             return newStr.ToString();
         }
 
-        private static bool CheckSoftwareTriggerPresence(ManagedCamera cam)
+        private bool CheckSoftwareTriggerPresence()
         {
             const uint TriggerInquiry = 0x530;
             uint triggerInquiryValue = cam.ReadRegister(TriggerInquiry);
@@ -44,12 +70,11 @@ namespace ExperimentControl
             return true;
         }
 
-        private static bool PollForTriggerReady(ManagedCamera cam)
+        private bool PollForTriggerReady(ManagedCamera cam)
         {
             const uint SoftwareTrigger = 0x62C;
 
-            uint softwareTriggerValue = 0;
-
+            uint softwareTriggerValue;
             do
             {
                 softwareTriggerValue = cam.ReadRegister(SoftwareTrigger);
@@ -59,7 +84,7 @@ namespace ExperimentControl
             return true;
         }
 
-        private static bool FireSoftwareTrigger(ManagedCamera cam)
+        private bool FireSoftwareTrigger()
         {
             const uint SoftwareTrigger = 0x62C;
             const uint SoftwareTriggerFireValue = 0x80000000;
@@ -68,28 +93,13 @@ namespace ExperimentControl
 
             return true;
         }
+         
 
-        public static void Test() //Name to be defined, structure to understand, transform message to exception, possibly dividing in different functions and even class
+        public void Snap() // To thing of a possible separation to avoid setting  everything all the time
         {
-            
+
+
             bool useSoftwareTrigger = true;
-
-            ManagedBusManager busMgr = new ManagedBusManager();
-            uint numCameras = busMgr.GetNumOfCameras();
-
-            
-
-            // Finish if there are no cameras
-            if (numCameras == 0)
-            {
-                throw new NoCameraDetectedException();
-            }
-
-            ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
-
-            ManagedCamera cam = new ManagedCamera();
-
-            cam.Connect(guid);
 
             // Power on the camera
             const uint CameraPower = 0x610;
@@ -97,7 +107,7 @@ namespace ExperimentControl
             cam.WriteRegister(CameraPower, CameraPowerValue);
 
             const Int32 MillisecondsToSleep = 100;
-            uint cameraPowerValueRead = 0;
+            uint cameraPowerValueRead;
 
             // Wait for camera to complete power-up
             do
@@ -107,11 +117,6 @@ namespace ExperimentControl
                 cameraPowerValueRead = cam.ReadRegister(CameraPower);
             }
             while ((cameraPowerValueRead & CameraPowerValue) == 0);
-
-            // Get the camera information
-            CameraInfo camInfo = cam.GetCameraInfo();
-
-            _ = GetCameraInfo(camInfo);
 
             if (!useSoftwareTrigger)
             {
@@ -145,6 +150,7 @@ namespace ExperimentControl
 
             // Set the trigger mode
             cam.SetTriggerMode(triggerMode);
+            
 
 
             // Get the camera configuration
@@ -152,6 +158,7 @@ namespace ExperimentControl
 
             // Set the grab timeout to 5 seconds
             config.grabTimeout = 5000;
+           
 
             // Set the camera configuration
             cam.SetConfiguration(config);
@@ -163,7 +170,7 @@ namespace ExperimentControl
 
             if (useSoftwareTrigger)
             {
-                if (CheckSoftwareTriggerPresence(cam) == false) //Check if the camera support software trigger
+                if (CheckSoftwareTriggerPresence() == false) //Check if the camera support software trigger
                 {
                     throw new SoftwareTriggerNotSupportedException();
                 }
@@ -184,17 +191,11 @@ namespace ExperimentControl
                 // Check that the trigger is ready
                 bool retVal = PollForTriggerReady(cam);
 
-                Console.WriteLine("Press the Enter key to initiate a software trigger.\n");
-                Console.ReadLine();
-
                 // Fire software trigger
-                retVal = FireSoftwareTrigger(cam);
-                if (retVal != true)
+                bool retVal1 = FireSoftwareTrigger();
+                if (!(retVal && retVal1))
                 {
-                    Console.WriteLine("Error firing software trigger!");
-                    Console.WriteLine("Press enter to exit...");
-                    Console.ReadLine();
-                    return;
+                    throw new TriggerFailedException();
                 }
             }
 
@@ -202,6 +203,7 @@ namespace ExperimentControl
             {
                 // Retrieve an image
                 cam.RetrieveBuffer(rawImage);
+                rawImage.Save("C:/Users/gs656local/Documents/Test/test.bmp");
             }
             catch (FC2Exception ex)
             {
@@ -209,17 +211,72 @@ namespace ExperimentControl
                 
             }
 
-            
+
             #endregion
+            
             // Stop capturing images
             cam.StopCapture();
 
             // Turn off trigger mode
             triggerMode.onOff = false;
             cam.SetTriggerMode(triggerMode);
-
-            // Disconnect the camera
-            cam.Disconnect();
         }
+
+        #region Set properties 
+        public void SetShutter(float shutter)
+        {
+            ///<summary>
+            ///Set the shutter time to the value shutter
+            ///</summary>
+            ///<param name="shutter">Duration of the shutter given in ms.</param>
+            CameraProperty prop = new CameraProperty
+            {
+                type = PropertyType.Shutter,
+                onOff = true,
+                autoManualMode = false,
+                absControl = true,
+                absValue = shutter
+            };
+            cam.SetProperty(prop);
+
+        }
+
+        public void SetFrameRate(float frm=35)
+        {
+            ///<summary>
+            ///Set the shutter time to the value shutter
+            ///</summary>
+            ///<param name="frm">Frame rate given in fps. Optional, default 35fps.</param>
+            CameraProperty prop = new CameraProperty
+            {
+                type = PropertyType.FrameRate,
+                onOff = true,
+                autoManualMode = false,
+                absControl = true,
+                absValue = frm
+            };
+            cam.SetProperty(prop);
+
+        }
+
+        public void SetGain(float gain=0)
+        {
+            ///<summary>
+            ///Set the gain time to the value gain
+            ///</summary>
+            ///<param name="gain">Gain set to the camera in dB. Optional, default value=0</param>
+            ///
+            CameraProperty prop = new CameraProperty
+            {
+                type = PropertyType.Gain,
+                onOff = true,
+                autoManualMode = false,
+                absControl = true,
+                absValue = gain
+            };
+            cam.SetProperty(prop);
+
+        }
+        #endregion
     }
 }

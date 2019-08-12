@@ -7,14 +7,16 @@ namespace ExperimentControl
 {
     class Control
     {
-        #region Variables declaration 
+        #region Attributes declaration 
         private Task shutterControl;
         private Task lampRelayControl;
-        private Task redLampControl;
+        private readonly Task redLampControl;
 
         private bool shutterState;
         private bool lampState;
         private bool redLampState;
+
+        private PtGreyCamera ptGreyCamera;
 
         private System.Timers.Timer timerD;
         private System.Timers.Timer timerO;
@@ -51,6 +53,7 @@ namespace ExperimentControl
                 "redLamp",
                 ChannelLineGrouping.OneChannelForAllLines
                 );
+            ptGreyCamera = new PtGreyCamera();
 
         }
         #endregion
@@ -212,13 +215,6 @@ namespace ExperimentControl
             }
         }
 
-        private void PtGSnap()
-        {
-            /// <summary>
-            /// Take a picture with the camera point Grey with the settings given in the configuration of the camera
-            /// </summary>
-            //to be implemented
-        }
         private void TankPicture()
         {
             ///<summary>
@@ -228,7 +224,7 @@ namespace ExperimentControl
             RedLampOn();
             Thread.Sleep(5000); //wait 5s to be sure it is stable
 
-            PtGSnap();
+            ptGreyCamera.Snap();
             Thread.Sleep(1000); // wait 1s to be sure the picture is taken
             RedLampOff();
         }
