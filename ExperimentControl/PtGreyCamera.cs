@@ -212,7 +212,7 @@ namespace ExperimentControl
             if (useSoftwareTrigger)
             {
                 // Check that the trigger is ready
-                bool retVal = PollForTriggerReady(cam);
+                bool retVal = PollForTriggerReady();
 
                 // Fire software trigger
                 bool retVal1 = FireSoftwareTrigger();
