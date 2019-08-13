@@ -12,13 +12,10 @@ namespace ExperimentControl
     {
         #region Attributes declaration 
 
-        private readonly DOTask shutterControl;
-        private readonly DOTask lampRelayControl;
-        private readonly DOTask redLampControl;
+        private readonly ComponentControl shutterControl;
+        private readonly ComponentControl lampControl;
+        private readonly ComponentControl redLampControl;
 
-        private bool shutterState;
-        private bool lampState;
-        private bool redLampState;
 
         private PtGreyCamera ptGreyCamera;
 
@@ -36,14 +33,10 @@ namespace ExperimentControl
         {
             SetTimer();
 
-            shutterState = false;
-            lampState = false;
-            redLampState = false;
-
-            shutterControl = new DOTask("Dev1/port0/line0", "shutter");
-            lampRelayControl = new DOTask("Dev1/port0/line1", "lampRelay");
+            shutterControl = new ComponentControl("Dev1/port0/line0", "shutter");
+            lampControl = new OnRelayComponentControl("Dev1/port0/line1", "lampRelay");
            
-            redLampControl = new DOTask("Dev1/port0/line2", "redLamp");
+            redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "redLamp");
            
             ptGreyCamera = new PtGreyCamera();
 
@@ -81,7 +74,7 @@ namespace ExperimentControl
         /// </summary>
         public bool GetShutterState()
         {
-            return shutterState;
+            return shutterControl.State;
         }
         ///<summary>
         ///Return the state of the main lamp
@@ -90,7 +83,7 @@ namespace ExperimentControl
         /// </summary>
         public bool GetLampState()
         {
-            return lampState;
+            return lampControl.State;
         }
         ///<summary>
         ///Return the state of the red lamp
@@ -99,97 +92,7 @@ namespace ExperimentControl
         /// </summary>
         public bool GetRedLampState()
         {
-            return redLampState;
-        }
-
-        ///<summary>
-        ///Open the shutter by putting P0.0 at HIGH
-        /// </summary>
-        private void ShutterOn()
-        {
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(shutterControl.Stream);
-            writer.WriteSingleSampleSingleLine(true, true);
-            shutterState = true;
-        }
-        ///<summary>
-        ///Close the shutter by putting P0.0 at LOW
-        /// </summary>
-        private void ShutterOff()
-        {
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(shutterControl.Stream);
-            writer.WriteSingleSampleSingleLine(true, false);
-            shutterState = false;
-        }
-        ///<summary>
-        ///Turn off the red lamp by putting P0.2 at LOW
-        /// </summary>
-        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
-
-        public void RedLampOff()
-        {
-            if (RelayVCC.State)
-            {
-                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
-                writer.WriteSingleSampleSingleLine(true, false);
-                redLampState = false;
-            }
-            else
-            {
-                throw new RelayNotActiveException();
-            }
-        }
-        ///<summary>
-        ///Turn on the red lamp by putting P0.2 at LOW
-        /// </summary>
-        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
-        public void RedLampOn()
-        {
-            if (RelayVCC.State)
-            {
-                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
-                writer.WriteSingleSampleSingleLine(true, true);
-                redLampState = true;
-            }
-            else
-            {
-                throw new RelayNotActiveException();
-            }
-        }
-
-        ///<summary>
-        ///Turn on the main lamp by putting P0.1 at HIGH
-        /// </summary>
-        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
-        private void LampOn()
-        {
-            if(RelayVCC.State)
-            {
-                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
-                writer.WriteSingleSampleSingleLine(true, true);
-                lampState = true;
-            }
-            else
-            {
-                throw new RelayNotActiveException();
-            }
-            
-        }
-        ///<summary>
-        ///Turn off the main lamp by putting P0.1 at LOW
-        /// </summary>
-        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
-        private void LampOff()
-        {
-            if (RelayVCC.State)
-            {
-                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
-                writer.WriteSingleSampleSingleLine(true, false);
-                lampState = false;
-        }
-             else
-            {
-                throw new RelayNotActiveException();
-            }
+            return redLampControl.State;
         }
 
         ///<summary>
@@ -201,9 +104,9 @@ namespace ExperimentControl
             countDay = 0;
             timerD.Start();
             timerO.Start();
-            LampOn();
-            RedLampOff();
-            ShutterOff();
+            lampControl.TurnOn();
+            redLampControl.TurnOff();
+            shutterControl.TurnOff();
 
             TankPicture();
             
@@ -219,9 +122,9 @@ namespace ExperimentControl
             countDay = 0;
             timerD.Stop();
             timerO.Stop();
-            LampOff();
-            RedLampOff();
-            ShutterOff();
+            lampControl.TurnOff();
+            redLampControl.TurnOff();
+            shutterControl.TurnOff();
             RelayVCC.Disactivate();
         }
        
@@ -232,12 +135,12 @@ namespace ExperimentControl
         /// </summary>
         private void TankPicture()
         {
-            RedLampOn();
+            redLampControl.TurnOn();
             Thread.Sleep(5000); //wait 5s to be sure it is stable
 
             ptGreyCamera.Snap("C:/Users/gs656local/Documents/Test/test.bmp");//argument to be changed
             Thread.Sleep(1000); // wait 1s to be sure the picture is taken
-            RedLampOff();
+            redLampControl.TurnOff();
         }
         ///<summary>
         ///Take a picture on the Nikon with the settings given on the (physical) camera
@@ -252,7 +155,7 @@ namespace ExperimentControl
         /// </summary>
         private void FlowVisualization()
         {
-            ShutterOn();
+            shutterControl.TurnOn();
             Thread.Sleep(2000);//wait 2s to be sure it is stable
 
             for (int i = 0; i < 10; i++)
@@ -260,7 +163,7 @@ namespace ExperimentControl
                 NikonSnap();
                 Thread.Sleep(1000);  //need more reflexion on the value and timing accuracy
             }
-            ShutterOff();
+            shutterControl.TurnOff();
         }
 
         #region Timer EventHandler 
@@ -274,11 +177,11 @@ namespace ExperimentControl
             countDay++;
             if (countDay % 2 == 0)
             {
-                LampOn();
+                lampControl.TurnOn();
             }
             else
             {
-                LampOff();
+                lampControl.TurnOff();
             }
         }
 
