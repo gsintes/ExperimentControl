@@ -1,5 +1,6 @@
 ﻿using System;
 using NationalInstruments.DAQmx;
+using System.IO;
 
 namespace ExperimentControl
 {
@@ -13,6 +14,7 @@ namespace ExperimentControl
         private readonly DOTask control;
         private bool _state = false;
         private readonly DigitalSingleChannelWriter writer;
+        private string channelName;
         #endregion
 
         public bool State => _state;
@@ -21,6 +23,7 @@ namespace ExperimentControl
         {
             control = new DOTask(port, channelName);
             writer = new DigitalSingleChannelWriter(control.Stream);
+            this.channelName = channelName;
         }
         /// <summary>
         /// Turn on the component and update the state
@@ -29,6 +32,15 @@ namespace ExperimentControl
         {
             writer.WriteSingleSampleSingleLine(true, true);
             _state = true;
+            DateTime date = DateTime.Now;
+            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ",
+            date.Year,
+            date.Month,
+            date.Day, date.Hour, date.Minute,date.Second) + channelName + " turned on";
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
         }
         /// <summary>
         /// Turn off the component and update the state
@@ -37,6 +49,19 @@ namespace ExperimentControl
         {
             writer.WriteSingleSampleSingleLine(true, false);
             _state = false;
+
+            DateTime date = DateTime.Now;
+            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ",
+            date.Year,
+            date.Month,
+            date.Day,
+            date.Hour,
+            date.Minute,
+            date.Second) + channelName + " turned off";
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
         }
 
     }

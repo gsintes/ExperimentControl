@@ -8,7 +8,7 @@ namespace ExperimentControl
 {
     class RelayNotActiveException : Exception 
     {
-        public RelayNotActiveException() : base("Relay not activated by the VCC, can't control")
+        public RelayNotActiveException() : base("Relay not activated by the VCC, can't do the action asked")
         {
 
         }

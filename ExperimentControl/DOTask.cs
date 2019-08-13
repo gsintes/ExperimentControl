@@ -10,7 +10,7 @@ namespace ExperimentControl
     class DOTask : Task
     {
 
-        public DOTask(string port,string channelName) : base()
+        public DOTask(string port, string channelName) : base()
         {
             _ = DOChannels.CreateChannel(
                 port,

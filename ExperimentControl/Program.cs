@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace ExperimentControl
@@ -14,6 +12,18 @@ namespace ExperimentControl
         [STAThread]
         static void Main()
         {
+            Directory.SetCurrentDirectory("C:/Users/gs656local/Documents/ExperimentResults");
+            DateTime date = DateTime.Now;
+            string dirName = string.Format("{0}-{1}-{2}_Experiment",
+                date.Year,
+                date.Month,
+                date.Day);
+            
+            Directory.CreateDirectory(dirName);
+            Directory.SetCurrentDirectory(dirName);
+            using (_ = File.Create("log.txt"))
+            {
+            }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

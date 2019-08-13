@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using FlyCapture2Managed;
+using System.IO;
 
 namespace ExperimentControl
 {
@@ -228,7 +229,20 @@ namespace ExperimentControl
                 {
                     // Retrieve an image
                     cam.RetrieveBuffer(rawImage);
+                   
                     rawImage.Save(fileName);
+                    DateTime date = DateTime.Now;
+                    string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: TANK PICTURE taken by the Point Grey Camera",
+                    date.Year,
+                    date.Month,
+                    date.Day,
+                    date.Hour,
+                    date.Minute,
+                    date.Second);
+                    using (StreamWriter writer = new StreamWriter("log.txt", true))
+                    {
+                        writer.WriteLine(str);
+                    }
                 }
                 catch (FC2Exception ex)
                 {

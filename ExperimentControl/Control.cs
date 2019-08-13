@@ -1,7 +1,7 @@
-﻿using NationalInstruments.DAQmx;
-using System;
+﻿using System;
 using System.Threading;
 using System.Timers;
+using System.IO;
 
 namespace ExperimentControl
 {
@@ -11,13 +11,14 @@ namespace ExperimentControl
     class Control
     {
         #region Attributes declaration 
+        
 
         private readonly ComponentControl shutterControl;
-        private readonly ComponentControl lampControl;
-        private readonly ComponentControl redLampControl;
+        private readonly OnRelayComponentControl lampControl;
+        private readonly OnRelayComponentControl redLampControl;
 
 
-        private PtGreyCamera ptGreyCamera;
+        private readonly PtGreyCamera ptGreyCamera;
 
         private System.Timers.Timer timerD;
         private System.Timers.Timer timerO;
@@ -33,10 +34,10 @@ namespace ExperimentControl
         {
             SetTimer();
 
-            shutterControl = new ComponentControl("Dev1/port0/line0", "shutter");
-            lampControl = new OnRelayComponentControl("Dev1/port0/line1", "lampRelay");
+            shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
+            lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
            
-            redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "redLamp");
+            redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
            
             ptGreyCamera = new PtGreyCamera();
 
@@ -67,6 +68,8 @@ namespace ExperimentControl
             timerO.Enabled = false;
 
         }
+
+        #region Assessors
         ///<summary>
         ///Return the state of the shutter
         ///True if open
@@ -94,37 +97,105 @@ namespace ExperimentControl
         {
             return redLampControl.State;
         }
+        #endregion
 
         ///<summary>
         ///Start the experiment by starting the timers, turning the main lamp ON, putting the shutter and the red lamp at  LOW. It takes a picture with the Point Grey+ red Light.
         /// </summary>
         public void Start()
         {
+            
             RelayVCC.Activate();
             countDay = 0;
             timerD.Start();
             timerO.Start();
-            lampControl.TurnOn();
-            redLampControl.TurnOff();
+            try
+            {
+                #region Log
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}:",
+                date.Year,
+                date.Month,
+                date.Day,
+                date.Hour,
+                date.Minute,
+                date.Second) + " START: Beginning of the experiment";
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
+                #endregion
+                lampControl.TurnOn();
+                redLampControl.TurnOff();
+            }
+            catch (RelayNotActiveException ex)
+            {
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR:",
+                date.Year,
+                date.Month,
+                date.Day,date.Hour,date.Minute) + ex.Message;
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
+
+            }
+
             shutterControl.TurnOff();
 
-            TankPicture();
-            
-
+            TankPicture();       
+                    
+                    
         }
+
+
+
+
+
 
         ///<summary>
         ///Stop the experiment by putting everything at LOW, and stopping the timers
         /// </summary>
         public void Stop()
         {
-            
-            countDay = 0;
-            timerD.Stop();
-            timerO.Stop();
-            lampControl.TurnOff();
-            redLampControl.TurnOff();
-            shutterControl.TurnOff();
+            #region log
+
+            DateTime date = DateTime.Now;
+            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}:",
+            date.Year,
+            date.Month,
+            date.Day,
+            date.Hour,
+            date.Minute,
+            date.Second) + " STOP: End of the experiment";
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
+            #endregion
+
+            try
+            {
+                countDay = 0;
+                timerD.Stop();
+                timerO.Stop();
+                lampControl.TurnOff();
+                redLampControl.TurnOff();
+                shutterControl.TurnOff();
+                        
+            }
+            catch (RelayNotActiveException)
+            {
+                RelayVCC.Activate();
+                countDay = 0;
+                timerD.Stop();
+                timerO.Stop();
+                lampControl.TurnOff();
+                redLampControl.TurnOff();
+                shutterControl.TurnOff();
+
+            }
             RelayVCC.Disactivate();
         }
        
@@ -135,12 +206,42 @@ namespace ExperimentControl
         /// </summary>
         private void TankPicture()
         {
-            redLampControl.TurnOn();
-            Thread.Sleep(5000); //wait 5s to be sure it is stable
+            try
+            {
+                redLampControl.TurnOn();
+                Thread.Sleep(5000); //wait 5s to be sure it is stable
 
-            ptGreyCamera.Snap("C:/Users/gs656local/Documents/Test/test.bmp");//argument to be changed
-            Thread.Sleep(1000); // wait 1s to be sure the picture is taken
-            redLampControl.TurnOff();
+                ptGreyCamera.Snap("C:/Users/gs656local/Documents/Test/test.bmp");//argument to be changed
+                Thread.Sleep(1000); // wait 1s to be sure the picture is taken
+                redLampControl.TurnOff();
+            }
+            catch (RelayNotActiveException ex)
+            {
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ERROR:",
+                date.Year,
+                date.Month,
+                date.Day, 
+                date.Hour, 
+                date.Minute,
+                date.Second) + ex.Message;
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
+
+            }catch(TriggerFailedException ex)
+            {
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ERROR:",
+                date.Year,
+                date.Month,
+                date.Day, date.Hour, date.Minute,date.Second) + ex.Message;
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
+            }
         }
         ///<summary>
         ///Take a picture on the Nikon with the settings given on the (physical) camera
@@ -174,15 +275,33 @@ namespace ExperimentControl
         /// <param name="e"></param>
         private void OnTimedEventD(Object source, ElapsedEventArgs e)
         {
-            countDay++;
-            if (countDay % 2 == 0)
+            try
             {
-                lampControl.TurnOn();
+                countDay++;
+                if (countDay % 2 == 0)
+                {
+                    lampControl.TurnOn();
+                    
+                }
+                else
+                {
+                    lampControl.TurnOff();
+ 
+                }
             }
-            else
+            catch (RelayNotActiveException ex)
             {
-                lampControl.TurnOff();
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR:",
+                date.Year,
+                date.Month,
+                date.Day, date.Hour, date.Minute) + ex.Message;
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.Write(str);
+                }
             }
+
         }
 
         ///<summary>
