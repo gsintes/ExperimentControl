@@ -12,7 +12,7 @@ namespace ExperimentControl
     {
         #region Attributes declaration 
 
-        private Task shutterControl;
+        private DOTask shutterControl;
         private Task lampRelayControl;
         private readonly Task redLampControl;
 
@@ -40,13 +40,7 @@ namespace ExperimentControl
             lampState = false;
             redLampState = false;
 
-            shutterControl = new Task();
-            _ = shutterControl.DOChannels.CreateChannel(
-                "Dev1/port0/line0",
-                "shutter",
-                ChannelLineGrouping.OneChannelForAllLines
-                );
-
+            shutterControl = new DOTask("Dev1/port0/line0", "shutter");
             lampRelayControl = new Task();
             _ = lampRelayControl.DOChannels.CreateChannel(
                 "Dev1/port0/line1",
@@ -138,39 +132,73 @@ namespace ExperimentControl
         ///<summary>
         ///Turn off the red lamp by putting P0.2 at LOW
         /// </summary>
+        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
+
         public void RedLampOff()
         {
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
-            writer.WriteSingleSampleSingleLine(true, false);
-            redLampState = false;
+            if (RelayVCC.State)
+            {
+                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
+                writer.WriteSingleSampleSingleLine(true, false);
+                redLampState = false;
+            }
+            else
+            {
+                throw new RelayNotActiveException();
+            }
         }
         ///<summary>
         ///Turn on the red lamp by putting P0.2 at LOW
         /// </summary>
+        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
         public void RedLampOn()
         {
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
-            writer.WriteSingleSampleSingleLine(true, true);
-            redLampState = true;
+            if (RelayVCC.State)
+            {
+                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(redLampControl.Stream);
+                writer.WriteSingleSampleSingleLine(true, true);
+                redLampState = true;
+            }
+            else
+            {
+                throw new RelayNotActiveException();
+            }
         }
 
         ///<summary>
         ///Turn on the main lamp by putting P0.1 at HIGH
         /// </summary>
+        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
         private void LampOn()
         {
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
-            writer.WriteSingleSampleSingleLine(true, true);
-            lampState = true;
+            if(RelayVCC.State)
+            {
+                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
+                writer.WriteSingleSampleSingleLine(true, true);
+                lampState = true;
+            }
+            else
+            {
+                throw new RelayNotActiveException();
+            }
+            
         }
         ///<summary>
-        ///Turn off the red lamp by putting P0.1 at LOW
+        ///Turn off the main lamp by putting P0.1 at LOW
         /// </summary>
+        /// <exception cref="RelayNotActiveException">Thrown when we try to control something on the relay but it not alimented on the VCC</exception>
         private void LampOff()
         {
-            DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
-            writer.WriteSingleSampleSingleLine(true, false);
-            lampState = false;
+            if (RelayVCC.State)
+            {
+                DigitalSingleChannelWriter writer = new DigitalSingleChannelWriter(lampRelayControl.Stream);
+                writer.WriteSingleSampleSingleLine(true, false);
+                lampState = false;
+        }
+             else
+            {
+                throw new RelayNotActiveException();
+            }
         }
 
         ///<summary>
@@ -178,6 +206,7 @@ namespace ExperimentControl
         /// </summary>
         public void Start()
         {
+            RelayVCC.Activate();
             countDay = 0;
             timerD.Start();
             timerO.Start();
@@ -186,6 +215,7 @@ namespace ExperimentControl
             ShutterOff();
 
             TankPicture();
+            
 
         }
 
@@ -201,7 +231,7 @@ namespace ExperimentControl
             LampOff();
             RedLampOff();
             ShutterOff();
-
+            RelayVCC.Disactivate();
         }
         /// <summary>
         /// Every 12h turn on or off the light for day/night cycle

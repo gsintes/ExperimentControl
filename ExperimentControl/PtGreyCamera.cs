@@ -18,21 +18,22 @@ namespace ExperimentControl
         /// <exception cref="NoCameraDetectedException">Thrown if no camera is detected.</exception>
         public PtGreyCamera()
         {
-            ManagedBusManager busMgr = new ManagedBusManager();
-            uint numCameras = busMgr.GetNumOfCameras();
-
-            // Finish if there are no cameras
-            if (numCameras == 0)
+            using (ManagedBusManager busMgr = new ManagedBusManager())
             {
-                throw new NoCameraDetectedException();
+                uint numCameras = busMgr.GetNumOfCameras();
+
+                // Finish if there are no cameras
+                if (numCameras == 0)
+                {
+                    throw new NoCameraDetectedException();
+                }
+
+                ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
+
+                cam = new ManagedCamera();
+
+                cam.Connect(guid);
             }
-
-            ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
-
-            cam = new ManagedCamera();
-
-            cam.Connect(guid);
-            busMgr.Dispose();
         }
         /// <summary>
         /// Get the information about the library used
@@ -205,36 +206,37 @@ namespace ExperimentControl
             }
 
 
-            
-            ManagedImage rawImage = new ManagedImage();
 
-
-            if (useSoftwareTrigger)
+            using (ManagedImage rawImage = new ManagedImage())
             {
-                // Check that the trigger is ready
-                bool retVal = PollForTriggerReady();
 
-                // Fire software trigger
-                bool retVal1 = FireSoftwareTrigger();
-                if (!(retVal && retVal1))
+
+                if (useSoftwareTrigger)
                 {
-                    throw new TriggerFailedException();
+                    // Check that the trigger is ready
+                    bool retVal = PollForTriggerReady();
+
+                    // Fire software trigger
+                    bool retVal1 = FireSoftwareTrigger();
+                    if (!(retVal && retVal1))
+                    {
+                        throw new TriggerFailedException();
+                    }
                 }
-            }
 
-            try
-            {
-                // Retrieve an image
-                cam.RetrieveBuffer(rawImage);
-                rawImage.Save(fileName);
-            }
-            catch (FC2Exception ex)
-            {
-                Console.WriteLine("Error retrieving buffer : {0}", ex.Message);
-                
-            }
+                try
+                {
+                    // Retrieve an image
+                    cam.RetrieveBuffer(rawImage);
+                    rawImage.Save(fileName);
+                }
+                catch (FC2Exception ex)
+                {
+                    Console.WriteLine("Error retrieving buffer : {0}", ex.Message);
 
+                }
 
+            }
             #endregion
             
             // Stop capturing images
@@ -250,8 +252,8 @@ namespace ExperimentControl
         ///<summary>
         ///Set the shutter time to the value shutter
         ///</summary>
-        ///<param name="shutter">Duration of the shutter given in ms.</param>
-        public void SetShutter(float shutter)
+        ///<param name="shutter">Duration of the shutter given in ms. Optional, default 0.511ms </param>
+        public void SetShutter(float shutter = 0.511f) //f at the end of the number to say we want a float and not a double
         {
             CameraProperty prop = new CameraProperty
             {
