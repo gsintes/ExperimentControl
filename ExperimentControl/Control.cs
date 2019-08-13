@@ -12,9 +12,9 @@ namespace ExperimentControl
     {
         #region Attributes declaration 
 
-        private DOTask shutterControl;
-        private Task lampRelayControl;
-        private readonly Task redLampControl;
+        private readonly DOTask shutterControl;
+        private readonly DOTask lampRelayControl;
+        private readonly DOTask redLampControl;
 
         private bool shutterState;
         private bool lampState;
@@ -41,19 +41,10 @@ namespace ExperimentControl
             redLampState = false;
 
             shutterControl = new DOTask("Dev1/port0/line0", "shutter");
-            lampRelayControl = new Task();
-            _ = lampRelayControl.DOChannels.CreateChannel(
-                "Dev1/port0/line1",
-                "lampRelay",
-                ChannelLineGrouping.OneChannelForAllLines
-                );
-
-            redLampControl = new Task();
-            _ = redLampControl.DOChannels.CreateChannel(
-                "Dev1/port0/line2",
-                "redLamp",
-                ChannelLineGrouping.OneChannelForAllLines
-                );
+            lampRelayControl = new DOTask("Dev1/port0/line1", "lampRelay");
+           
+            redLampControl = new DOTask("Dev1/port0/line2", "redLamp");
+           
             ptGreyCamera = new PtGreyCamera();
 
         }
@@ -233,23 +224,7 @@ namespace ExperimentControl
             ShutterOff();
             RelayVCC.Disactivate();
         }
-        /// <summary>
-        /// Every 12h turn on or off the light for day/night cycle
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        private void OnTimedEventD(Object source, ElapsedEventArgs e) 
-        {
-            countDay++;
-            if (countDay % 2 == 0)
-            {
-                LampOn();
-            }
-            else
-            {
-                LampOff();
-            }
-        }
+       
 
         ///<summary>
         ///Take a picture of the whole tank using the point grey camera as configurated and the red lamp,
@@ -287,6 +262,26 @@ namespace ExperimentControl
             }
             ShutterOff();
         }
+
+        #region Timer EventHandler 
+        /// <summary>
+        /// Every 12h turn on or off the light for day/night cycle
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void OnTimedEventD(Object source, ElapsedEventArgs e)
+        {
+            countDay++;
+            if (countDay % 2 == 0)
+            {
+                LampOn();
+            }
+            else
+            {
+                LampOff();
+            }
+        }
+
         ///<summary>
         ///Every hour, as a response to the tick of timerO, we turn take a picture with the point grey and the red light, then 10 pictures with the nikon and the laser.
         ///</summary>
@@ -297,6 +292,7 @@ namespace ExperimentControl
             FlowVisualization();
 
         }
+        #endregion
 
         #endregion
     }
