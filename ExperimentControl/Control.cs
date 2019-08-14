@@ -38,7 +38,7 @@ namespace ExperimentControl
             lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
            
             redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
-           
+            CameraSetting setting = new CameraSetting("Setting.txt");           
             ptGreyCamera = new PtGreyCamera();
 
         }
@@ -211,7 +211,7 @@ namespace ExperimentControl
                 redLampControl.TurnOn();
                 Thread.Sleep(5000); //wait 5s to be sure it is stable
 
-                ptGreyCamera.Snap("C:/Users/gs656local/Documents/Test/test.bmp");//argument to be changed
+                ptGreyCamera.Snap("test.bmp");//argument to be changed
                 Thread.Sleep(1000); // wait 1s to be sure the picture is taken
                 redLampControl.TurnOff();
             }
@@ -230,7 +230,8 @@ namespace ExperimentControl
                     writer.WriteLine(str);
                 }
 
-            }catch(TriggerFailedException ex)
+            }
+            catch (TriggerFailedException ex)
             {
                 DateTime date = DateTime.Now;
                 string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ERROR:",
@@ -242,6 +243,11 @@ namespace ExperimentControl
                     writer.WriteLine(str);
                 }
             }
+            finally
+            {
+
+            }
+
         }
         ///<summary>
         ///Take a picture on the Nikon with the settings given on the (physical) camera

@@ -21,9 +21,12 @@ namespace ExperimentControl
             
             Directory.CreateDirectory(dirName);
             Directory.SetCurrentDirectory(dirName);
+
             using (_ = File.Create("log.txt"))
             {
             }
+            
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

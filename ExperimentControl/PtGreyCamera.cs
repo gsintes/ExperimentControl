@@ -11,16 +11,23 @@ namespace ExperimentControl
     class PtGreyCamera
 
     {
-        private ManagedCamera cam;
-        
+        #region ATTRIBUTES DECLARATION  
+        private static ManagedCamera cam;
+        private CameraSetting setting;
+        #endregion
+
+        #region CONSTRUCTORS
+
         /// <summary>
         ///Initialize a point Grey Camera, it take the first that it detect if their is more than one. 
+        ///Give the default setting.
         /// </summary>
         /// <exception cref="NoCameraDetectedException">Thrown if no camera is detected.</exception>
         public PtGreyCamera()
         {
             using (ManagedBusManager busMgr = new ManagedBusManager())
             {
+                setting = new CameraSetting();
                 uint numCameras = busMgr.GetNumOfCameras();
 
                 // Finish if there are no cameras
@@ -34,8 +41,40 @@ namespace ExperimentControl
                 cam = new ManagedCamera();
 
                 cam.Connect(guid);
+                SetProp();
             }
         }
+        /// <summary>
+        ///Initialize a point Grey Camera, it take the first that it detect if their is more than one. 
+        ///Utilize the given settings to initialize the camera.
+        /// </summary>
+        /// <exception cref="NoCameraDetectedException">Thrown if no camera is detected.</exception>
+        /// <param name="setting">Setting used for the camera</param>
+        public PtGreyCamera(CameraSetting setting)
+        {
+            using (ManagedBusManager busMgr = new ManagedBusManager())
+            {
+                this.setting = setting;
+                uint numCameras = busMgr.GetNumOfCameras();
+
+                // Finish if there are no cameras
+                if (numCameras == 0)
+                {
+                    throw new NoCameraDetectedException();
+                }
+
+                ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
+
+                cam = new ManagedCamera();
+
+                cam.Connect(guid);
+                SetProp();
+            }
+        }
+        #endregion
+
+        #region METHODS
+
         /// <summary>
         /// Get the information about the library used
         /// </summary>
@@ -262,12 +301,27 @@ namespace ExperimentControl
         }
 
         #region Set properties 
-
+        public void ChangeSetting(CameraSetting setting)
+        {
+            this.setting = setting;
+            SetProp();
+        }
+        /// <summary>
+        /// Set the current settings of the class in the camera
+        /// </summary>
+        private void SetProp()
+        {
+            SetShutter(setting.Shutter);
+            SetFrameRate(setting.FrameRate);
+            SetBrightness(setting.Brightness);
+            SetGain(setting.Gain);
+            SetAutoExposure();
+        }
         ///<summary>
         ///Set the shutter time to the value shutter
         ///</summary>
-        ///<param name="shutter">Duration of the shutter given in ms. Optional, default 0.511ms </param>
-        public void SetShutter(float shutter = 0.511f) //f at the end of the number to say we want a float and not a double
+        ///<param name="shutter">Duration of the shutter given in ms.</param>
+        private void SetShutter(float shutter) //f at the end of the number to say we want a float and not a double
         {
             CameraProperty prop = new CameraProperty
             {
@@ -283,8 +337,8 @@ namespace ExperimentControl
         ///<summary>
         ///Set the frame rate to the value frm
         ///</summary>
-        ///<param name="frm">Frame rate given in fps. Optional, default 35fps.</param>
-        public void SetFrameRate(float frm=35)
+        ///<param name="frm">Frame rate given in fps.</param>
+        private void SetFrameRate(float frm)
         {
             CameraProperty prop = new CameraProperty
             {
@@ -300,8 +354,8 @@ namespace ExperimentControl
         ///<summary>
         ///Set the brightness.
         ///</summary>
-        ///<param name="brightness">Brightness given in %. Optional, default 0%.</param>
-        public void SetBrightness(float brightness = 0)
+        ///<param name="brightness">Brightness given in %.</param>
+        private void SetBrightness(float brightness)
         {
             CameraProperty prop = new CameraProperty
             {
@@ -317,9 +371,9 @@ namespace ExperimentControl
         ///<summary>
         ///Set the gain time to the value gain
         ///</summary>
-        ///<param name="gain">Gain set to the camera in dB. Optional, default value=0</param>
+        ///<param name="gain">Gain set to the camera in dB.</param>
         ///
-        public void SetGain(float gain=0)
+        private void SetGain(float gain)
         {
             CameraProperty prop = new CameraProperty
             {
@@ -335,7 +389,7 @@ namespace ExperimentControl
         ///<summary>
         ///Set the auto exposure.
         ///</summary>
-        public void SetAutoExposure()
+        private void SetAutoExposure()
         {
             CameraProperty prop = new CameraProperty
             {
@@ -347,6 +401,7 @@ namespace ExperimentControl
 
         }
 
+        #endregion
         #endregion
     }
 }
