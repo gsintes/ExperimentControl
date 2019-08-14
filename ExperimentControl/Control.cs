@@ -39,7 +39,7 @@ namespace ExperimentControl
            
             redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
             CameraSetting setting = new CameraSetting("Setting.txt");           
-            ptGreyCamera = new PtGreyCamera();
+            ptGreyCamera = new PtGreyCamera(setting);
 
         }
         #endregion
@@ -208,10 +208,15 @@ namespace ExperimentControl
         {
             try
             {
+                
                 redLampControl.TurnOn();
                 Thread.Sleep(5000); //wait 5s to be sure it is stable
-
-                ptGreyCamera.Snap("test.bmp");//argument to be changed
+                DateTime date = DateTime.Now;
+                ptGreyCamera.Snap(string.Format("TankPictures/im_{0}-{1}-{2}_{3}.bmp",
+                date.Year,
+                date.Month,
+                date.Day, 
+                date.Hour));//argument to be changed
                 Thread.Sleep(1000); // wait 1s to be sure the picture is taken
                 redLampControl.TurnOff();
             }

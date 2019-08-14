@@ -21,7 +21,7 @@ namespace ExperimentControl
             
             Directory.CreateDirectory(dirName);
             Directory.SetCurrentDirectory(dirName);
-
+            Directory.CreateDirectory("TankPictures");
             using (_ = File.Create("log.txt"))
             {
             }

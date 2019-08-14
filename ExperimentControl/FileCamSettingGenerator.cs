@@ -5,6 +5,6 @@ namespace ExperimentControl
 {
     class FileCamSettingGenerator
     {
-        //Directory.SetCurrentDirectory(dirName);
+
     }
 }

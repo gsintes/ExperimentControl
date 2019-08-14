@@ -30,7 +30,6 @@ namespace ExperimentControl
                 setting = new CameraSetting();
                 uint numCameras = busMgr.GetNumOfCameras();
 
-                // Finish if there are no cameras
                 if (numCameras == 0)
                 {
                     throw new NoCameraDetectedException();
