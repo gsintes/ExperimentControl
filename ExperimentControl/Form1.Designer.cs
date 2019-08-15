@@ -37,6 +37,7 @@ namespace ExperimentControl
             this.refreshTimer = new System.Windows.Forms.Timer(this.components);
             this.lampTxtBox = new System.Windows.Forms.TextBox();
             this.redLampTxtBox = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // startButton
@@ -90,11 +91,21 @@ namespace ExperimentControl
             this.redLampTxtBox.TabIndex = 4;
             this.redLampTxtBox.Text = "Red lamp: OFF";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(521, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(8, 8);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.redLampTxtBox);
             this.Controls.Add(this.lampTxtBox);
             this.Controls.Add(this.laserTxtBox);
@@ -115,6 +126,7 @@ namespace ExperimentControl
         private System.Windows.Forms.Timer refreshTimer;
         private System.Windows.Forms.TextBox lampTxtBox;
         private System.Windows.Forms.TextBox redLampTxtBox;
+        private System.Windows.Forms.Button button1;
     }
 }
 

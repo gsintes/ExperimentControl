@@ -30,15 +30,18 @@ namespace ExperimentControl
         /// <summary>
         /// Initialize the control class by setting the timers, creating the channels and a Point Grey camera
         /// </summary>
+        /// <exception cref="FormatNotRespectedException">Thrown when the setting file for the camera doesn't respect the expected format</exception>
+        /// <exception cref="NoCameraDetectedException">Thrown when there isn't any camera detected</exception>
         public Control()
         {
+
             SetTimer();
 
             shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
             lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
-           
+
             redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
-            CameraSetting setting = new CameraSetting("Setting.txt");           
+            CameraSetting setting = new CameraSetting("Setting.txt");
             ptGreyCamera = new PtGreyCamera(setting);
 
         }
@@ -250,7 +253,18 @@ namespace ExperimentControl
             }
             finally
             {
-
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: FATAL ERROR:",
+                date.Year,
+                date.Month,
+                date.Day,
+                date.Hour,
+                date.Minute,
+                date.Second);
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
             }
 
         }

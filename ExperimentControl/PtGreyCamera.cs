@@ -394,7 +394,7 @@ namespace ExperimentControl
             {
                 type = PropertyType.AutoExposure,
                 onOff = true,
-                autoManualMode = true
+                autoManualMode = false
             };
             cam.SetProperty(prop);
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ExperimentControl
@@ -10,14 +9,23 @@ namespace ExperimentControl
         Control control;
         public Form1()
         {
-           
 
-            control = new Control();
-            InitializeComponent();
-            
-            refreshTimer.Interval = 1000;
-            refreshTimer.Start();
-            
+            try
+            {
+                control = new Control();
+                InitializeComponent();
+
+                refreshTimer.Interval = 1000;
+                refreshTimer.Start();
+            }
+            catch( FormatNotRespectedException )
+            {
+                MessageBox.Show("The setting file doesn't respect the format, modify it and retry.","Error",MessageBoxButtons.OK);
+            }
+            catch (NoCameraDetectedException)
+            {
+                MessageBox.Show("No camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
+            }
         }
 
 
