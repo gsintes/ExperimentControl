@@ -9,10 +9,9 @@ namespace ExperimentControl
     /// Enable the control of the point grey camera.
     /// </summary>
     class PtGreyCamera
-
     {
         #region ATTRIBUTES DECLARATION  
-        private static ManagedCamera cam;
+        private readonly ManagedCamera cam;
         private CameraSetting setting;
         #endregion
 
@@ -55,7 +54,7 @@ namespace ExperimentControl
             {
                 this.setting = setting;
                 uint numCameras = busMgr.GetNumOfCameras();
-
+                Console.WriteLine(numCameras);
                 // Finish if there are no cameras
                 if (numCameras == 0)
                 {
@@ -285,7 +284,6 @@ namespace ExperimentControl
                 catch (FC2Exception ex)
                 {
                     Console.WriteLine("Error retrieving buffer : {0}", ex.Message);
-
                 }
 
             }
@@ -395,7 +393,7 @@ namespace ExperimentControl
                 type = PropertyType.AutoExposure,
                 onOff = true,
                 autoManualMode = false
-            };
+            };//not sure how it is working but seems to be the default value
             cam.SetProperty(prop);
 
         }

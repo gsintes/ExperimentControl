@@ -6,17 +6,18 @@ namespace ExperimentControl
 {
     public partial class Form1 : Form
     {
-        Control control;
+        private readonly Control control;
         public Form1()
         {
-
+            
             try
             {
+                
                 control = new Control();
                 InitializeComponent();
-
                 refreshTimer.Interval = 1000;
                 refreshTimer.Start();
+                
             }
             catch( FormatNotRespectedException )
             {
@@ -25,6 +26,7 @@ namespace ExperimentControl
             catch (NoCameraDetectedException)
             {
                 MessageBox.Show("No camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
+
             }
         }
 

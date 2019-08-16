@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Timers;
 using System.IO;
+using CameraControl.Devices;
 
 namespace ExperimentControl
 {
@@ -19,7 +20,7 @@ namespace ExperimentControl
 
 
         private readonly PtGreyCamera ptGreyCamera;
-
+        private readonly NikonCamera nikonCamera;
         private System.Timers.Timer timerD;
         private System.Timers.Timer timerO;
 
@@ -34,16 +35,22 @@ namespace ExperimentControl
         /// <exception cref="NoCameraDetectedException">Thrown when there isn't any camera detected</exception>
         public Control()
         {
+            try
+            {
+                SetTimer();
 
-            SetTimer();
+                shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
+                lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
 
-            shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
-            lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
-
-            redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
-            CameraSetting setting = new CameraSetting("Setting.txt");
-            ptGreyCamera = new PtGreyCamera(setting);
-
+                redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
+                CameraSetting setting = new CameraSetting("PtGreySetting.txt");
+                ptGreyCamera = new PtGreyCamera(setting);
+                nikonCamera = new NikonCamera();
+            }
+            catch (FileNotFoundException)
+            {
+                ptGreyCamera = new PtGreyCamera();
+            }
         }
         #endregion
 
@@ -151,10 +158,6 @@ namespace ExperimentControl
                     
                     
         }
-
-
-
-
 
 
         ///<summary>
@@ -265,28 +268,34 @@ namespace ExperimentControl
                 {
                     writer.WriteLine(str);
                 }
+                Stop();
             }
 
         }
         ///<summary>
         ///Take a picture on the Nikon with the settings given on the (physical) camera
         /// </summary>
-        private void NikonSnap()
-        {
-            
-            //to be implemented
-        }
+        
         ///<summary>
         ///Open the laser shutter and take 10 picutres with the Nikon to visualize the flow and then close the shutter.
         /// </summary>
         private void FlowVisualization()
         {
+            int count = 0;
+            DateTime date = DateTime.Now;
+            string prefix = string.Format("im_{0}-{1}-{2},{3}:{4}", date.Year,
+                date.Month,
+                date.Day,
+                date.Hour,
+                date.Minute);
             shutterControl.TurnOn();
             Thread.Sleep(2000);//wait 2s to be sure it is stable
-
+            
             for (int i = 0; i < 10; i++)
             {
-                NikonSnap();
+
+                string filename = StaticHelper.GetUniqueFilename(prefix, count, ".extension"); //choose extension
+                nikonCamera.Snap(filename);
                 Thread.Sleep(1000);  //need more reflexion on the value and timing accuracy
             }
             shutterControl.TurnOff();

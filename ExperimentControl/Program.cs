@@ -25,8 +25,8 @@ namespace ExperimentControl
             using (_ = File.Create("log.txt"))
             {
             }
-            
-            
+
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

@@ -7,4 +7,9 @@ Properties/
 todo.txt
 throwingMethod.txt
 ExperimentControl.csproj.user;
+packages/
+packages.config
+EDSDK.dll
+EdsImage.dll
+
 
