@@ -1,12 +1,10 @@
 bin/
 .vs/
 App.config
-ExperimentControl.csproj
 obj/
 Properties/
 todo.txt
 throwingMethod.txt
-ExperimentControl.csproj.user;
 packages/
 packages.config
 EDSDK.dll

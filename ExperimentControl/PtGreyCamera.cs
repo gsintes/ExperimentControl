@@ -37,7 +37,6 @@ namespace ExperimentControl
                 ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
 
                 cam = new ManagedCamera();
-
                 cam.Connect(guid);
                 SetProp();
             }
@@ -66,6 +65,7 @@ namespace ExperimentControl
                 cam = new ManagedCamera();
 
                 cam.Connect(guid);
+               
                 SetProp();
             }
         }
@@ -161,7 +161,7 @@ namespace ExperimentControl
         /// <exception cref="TriggerFailedException">Thrown when the triggering had failed and the picture hasn't been taken.</exception>
         public void Snap(string fileName) // To thing of a possible separation to avoid setting  everything all the time
         {
-            bool useSoftwareTrigger = true;
+            
 
             // Power on the camera
             const uint CameraPower = 0x610;
@@ -180,15 +180,7 @@ namespace ExperimentControl
             }
             while ((cameraPowerValueRead & CameraPowerValue) == 0);
 
-            if (!useSoftwareTrigger)
-            {
-                // Check for external trigger support
-                TriggerModeInfo triggerModeInfo = cam.GetTriggerModeInfo();
-                if (triggerModeInfo.present != true)
-                {
-                    throw new ExternalTriggerNotSupportedException();
-                }
-            }
+
 
             // Get current trigger settings
             TriggerMode triggerMode = cam.GetTriggerMode();
@@ -199,16 +191,11 @@ namespace ExperimentControl
             triggerMode.mode = 0;
             triggerMode.parameter = 0;
 
-            if (useSoftwareTrigger)
-            {
-                // A source of 7 means software trigger
-                triggerMode.source = 7;
-            }
-            else
-            {
-                // Triggering the camera externally using source 0.
-                triggerMode.source = 0;
-            }
+        
+            // A source of 7 means software trigger
+            triggerMode.source = 7;
+
+         
 
             // Set the trigger mode
             cam.SetTriggerMode(triggerMode);
@@ -230,38 +217,20 @@ namespace ExperimentControl
             // Camera is ready, start capturing images
             cam.StartCapture();
 
-            if (useSoftwareTrigger)
-            {
-                if (CheckSoftwareTriggerPresence() == false) //Check if the camera support software trigger
-                {
-                    throw new SoftwareTriggerNotSupportedException();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Trigger the camera by sending a trigger pulse to GPIO%d.\n",
-                  triggerMode.source);
-            }
-
-
 
             using (ManagedImage rawImage = new ManagedImage())
             {
 
+                // Check that the trigger is ready
+                bool retVal = PollForTriggerReady();
 
-                if (useSoftwareTrigger)
+                // Fire software trigger
+                bool retVal1 = FireSoftwareTrigger();
+                if (!(retVal && retVal1))
                 {
-                    // Check that the trigger is ready
-                    bool retVal = PollForTriggerReady();
-
-                    // Fire software trigger
-                    bool retVal1 = FireSoftwareTrigger();
-                    if (!(retVal && retVal1))
-                    {
-                        throw new TriggerFailedException();
-                    }
+                    throw new TriggerFailedException();
                 }
-
+                
                 try
                 {
                     // Retrieve an image

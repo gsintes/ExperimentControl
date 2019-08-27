@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Timers;
 using System.IO;
-using CameraControl.Devices;
+using System.Windows.Forms;
 
 namespace ExperimentControl
 {
@@ -35,17 +35,26 @@ namespace ExperimentControl
         /// <exception cref="NoCameraDetectedException">Thrown when there isn't any camera detected</exception>
         public Control()
         {
+ 
+            SetTimer();
+
+            shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
+            lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
+            redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
             try
             {
-                SetTimer();
+                nikonCamera = new NikonCamera();
+            }
+            catch (NoCameraDetectedException)
+            {
+                MessageBox.Show("No Nikon camera detected. Check if it is on.", "Error", MessageBoxButtons.OK);
+            }
 
-                shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
-                lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
 
-                redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
+            try
+            {
                 CameraSetting setting = new CameraSetting("PtGreySetting.txt");
                 ptGreyCamera = new PtGreyCamera(setting);
-                nikonCamera = new NikonCamera();
             }
             catch (FileNotFoundException)
             {
@@ -154,8 +163,8 @@ namespace ExperimentControl
 
             shutterControl.TurnOff();
 
-            TankPicture();       
-                    
+            TankPicture();
+            FlowVisualization();
                     
         }
 
@@ -222,7 +231,7 @@ namespace ExperimentControl
                 date.Year,
                 date.Month,
                 date.Day, 
-                date.Hour));//argument to be changed
+                date.Hour));
                 Thread.Sleep(1000); // wait 1s to be sure the picture is taken
                 redLampControl.TurnOff();
             }
@@ -244,6 +253,7 @@ namespace ExperimentControl
             }
             catch (TriggerFailedException ex)
             {
+                
                 DateTime date = DateTime.Now;
                 string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ERROR:",
                 date.Year,
@@ -254,8 +264,9 @@ namespace ExperimentControl
                     writer.WriteLine(str);
                 }
             }
-            finally
+            catch (Exception ex) 
             {
+                
                 DateTime date = DateTime.Now;
                 string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: FATAL ERROR:",
                 date.Year,
@@ -263,7 +274,7 @@ namespace ExperimentControl
                 date.Day,
                 date.Hour,
                 date.Minute,
-                date.Second);
+                date.Second) + ex.Message; ;
                 using (StreamWriter writer = new StreamWriter("log.txt", true))
                 {
                     writer.WriteLine(str);
@@ -272,33 +283,37 @@ namespace ExperimentControl
             }
 
         }
-        ///<summary>
-        ///Take a picture on the Nikon with the settings given on the (physical) camera
-        /// </summary>
-        
+
         ///<summary>
         ///Open the laser shutter and take 10 picutres with the Nikon to visualize the flow and then close the shutter.
         /// </summary>
         private void FlowVisualization()
         {
-            int count = 0;
-            DateTime date = DateTime.Now;
-            string prefix = string.Format("im_{0}-{1}-{2},{3}:{4}", date.Year,
-                date.Month,
-                date.Day,
-                date.Hour,
-                date.Minute);
             shutterControl.TurnOn();
             Thread.Sleep(2000);//wait 2s to be sure it is stable
             
             for (int i = 0; i < 10; i++)
             {
-
-                string filename = StaticHelper.GetUniqueFilename(prefix, count, ".extension"); //choose extension
-                nikonCamera.Snap(filename);
-                Thread.Sleep(1000);  //need more reflexion on the value and timing accuracy
+                nikonCamera.Snap();
+                Thread.Sleep(2000);  //need more reflexion on the value and timing accuracy
             }
+             #region Log
+            DateTime date = DateTime.Now;
+            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}:",
+            date.Year,
+            date.Month,
+            date.Day,
+            date.Hour,
+            date.Minute,
+            date.Second) + "Flow Vizualization";
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
+            #endregion
             shutterControl.TurnOff();
+           
+
         }
 
         #region Timer EventHandler 

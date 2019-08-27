@@ -6,7 +6,7 @@ namespace ExperimentControl
 {
     public partial class Form1 : Form
     {
-        private readonly Control control;
+        private Control control;
         public Form1()
         {
             
