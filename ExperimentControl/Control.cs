@@ -18,6 +18,8 @@ namespace ExperimentControl
         private readonly OnRelayComponentControl lampControl;
         private readonly OnRelayComponentControl redLampControl;
 
+        private bool _Running = false;
+
 
         private readonly PtGreyCamera ptGreyCamera;
         private readonly NikonCamera nikonCamera;
@@ -25,6 +27,8 @@ namespace ExperimentControl
         private System.Timers.Timer timerO;
 
         private int countDay;
+
+        public bool Running { get => _Running; }
         #endregion
 
         #region Constructors
@@ -123,6 +127,7 @@ namespace ExperimentControl
         /// </summary>
         public void Start()
         {
+            _Running = true;
             
             RelayVCC.Activate();
             countDay = 0;
@@ -174,6 +179,7 @@ namespace ExperimentControl
         /// </summary>
         public void Stop()
         {
+            _Running = false;
             #region log
 
             DateTime date = DateTime.Now;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ExperimentControl
@@ -33,19 +34,21 @@ namespace ExperimentControl
 
         private void StopButton_Click(object sender, EventArgs e)
         {
-            DialogResult rsl = MessageBox.Show("You are going to stop the experiment?", "Stop experiment", MessageBoxButtons.OKCancel);
-            switch (rsl)
+            if (control.Running)
             {
-                case DialogResult.OK:
-
-                    control.Stop();
-                    break;
-                case DialogResult.Cancel:
-                    MessageBox.Show("Information", "Experiment continues");
-                    break;
-                default:
-                    MessageBox.Show("Information", "Experiment continues");
-                    break;
+                DialogResult rsl = MessageBox.Show("You are going to stop the experiment?", "Stop experiment", MessageBoxButtons.OKCancel);
+                switch (rsl)
+                {
+                    case DialogResult.OK:
+                        control.Stop();
+                        break;
+                    case DialogResult.Cancel:
+                        MessageBox.Show("Information", "Experiment continues");
+                        break;
+                    default:
+                        MessageBox.Show("Information", "Experiment continues");
+                        break;
+                }
             }
 
 
@@ -53,7 +56,11 @@ namespace ExperimentControl
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            control.Start();
+            if (!control.Running)
+            {
+                control.Start();
+            }
+            
         }
 
         private void Refreshtimer_Tick(object sender, EventArgs e)
