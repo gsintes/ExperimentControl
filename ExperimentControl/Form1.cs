@@ -40,7 +40,8 @@ namespace ExperimentControl
                 switch (rsl)
                 {
                     case DialogResult.OK:
-                        control.Stop();
+                        Thread thread = new Thread(control.Stop);
+                        thread.Start();
                         break;
                     case DialogResult.Cancel:
                         MessageBox.Show("Information", "Experiment continues");
@@ -58,7 +59,9 @@ namespace ExperimentControl
         {
             if (!control.Running)
             {
-                control.Start();
+                Thread thread = new Thread(control.Start);
+                thread.Start();
+
             }
             
         }

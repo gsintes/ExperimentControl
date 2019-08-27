@@ -364,10 +364,15 @@ namespace ExperimentControl
         ///</summary>
         private void OnTimedEventO(Object source, ElapsedEventArgs e)
         {
+            Thread thread = new Thread(HourRoutine);
+            thread.Start();
+
+        }
+        private void HourRoutine()
+        {
             TankPicture();
             Thread.Sleep(2000);
             FlowVisualization();
-
         }
         #endregion
 
