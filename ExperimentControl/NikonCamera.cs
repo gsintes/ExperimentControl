@@ -26,7 +26,9 @@ namespace ExperimentControl
             {
                 throw new NoCameraDetectedException();
             }
+        
             deviceManager.SelectedCameraDevice.CaptureInSdRam = true;
+            //SetProp("640", "1/80");
         }
         #endregion 
         public void Snap()
@@ -77,7 +79,12 @@ namespace ExperimentControl
                 DateTime date = DateTime.Now;
                 string fileName = Path.Combine(FolderForPhotos, String.Format("im_{0}-{1}-{2},{3}.TIF",date.Year,
                 date.Month,
-                date.Day, date.Hour));
+                date.Day,
+                date.Hour));
+                fileName =
+                        StaticHelper.GetUniqueFilename(
+                            Path.GetDirectoryName(fileName) + "\\" + Path.GetFileNameWithoutExtension(fileName) + "_", 0,
+                            Path.GetExtension(fileName));
                 // if file existtry to get a new filename to prevent file lost.
                 // This is useful when camera is set to record in ram all filenames are thee same.
                 if (File.Exists(fileName))
@@ -113,12 +120,14 @@ namespace ExperimentControl
                 }
             }
         }
-        void DeviceManager_PhotoCaptured(object sender, PhotoCapturedEventArgs eventArgs)
+        private void DeviceManager_PhotoCaptured(object sender, PhotoCapturedEventArgs eventArgs)
         {
             
             // to prevent freeze start the transfer process in a new thread
             Thread thread = new Thread(PhotoCaptured);
             thread.Start(eventArgs);
         }
+
+
     }
 }

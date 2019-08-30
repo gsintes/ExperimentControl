@@ -57,7 +57,7 @@ namespace ExperimentControl
 
             try
             {
-                CameraSetting setting = new CameraSetting("PtGreySetting.txt");
+                PtGreyCameraSetting setting = new PtGreyCameraSetting("PtGreySetting.txt");
                 ptGreyCamera = new PtGreyCamera(setting);
             }
             catch (FileNotFoundException)
@@ -137,7 +137,7 @@ namespace ExperimentControl
             {
                 #region Log
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}:",
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
                 date.Year,
                 date.Month,
                 date.Day,
@@ -155,10 +155,13 @@ namespace ExperimentControl
             catch (RelayNotActiveException ex)
             {
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR:",
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR:",
                 date.Year,
                 date.Month,
-                date.Day,date.Hour,date.Minute) + ex.Message;
+                date.Day,
+                date.Hour,
+                date.Minute,
+                date.Second) + ex.Message;
                 using (StreamWriter writer = new StreamWriter("log.txt", true))
                 {
                     writer.WriteLine(str);
@@ -183,7 +186,7 @@ namespace ExperimentControl
             #region log
 
             DateTime date = DateTime.Now;
-            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}:",
+            string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
             date.Year,
             date.Month,
             date.Day,
@@ -233,18 +236,32 @@ namespace ExperimentControl
                 redLampControl.TurnOn();
                 Thread.Sleep(5000); //wait 5s to be sure it is stable
                 DateTime date = DateTime.Now;
-                ptGreyCamera.Snap(string.Format("TankPictures/im_{0}-{1}-{2}_{3}.bmp",
+                ptGreyCamera.Snap(string.Format("TankPictures/im_{0}-{1}-{2}_{3:00}.bmp",
                 date.Year,
                 date.Month,
                 date.Day, 
                 date.Hour));
                 Thread.Sleep(1000); // wait 1s to be sure the picture is taken
                 redLampControl.TurnOff();
+                
+                #region Log
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: TANK PICTURE taken by the Point Grey Camera",
+                date.Year,
+                date.Month,
+                date.Day,
+                date.Hour,
+                date.Minute,
+                date.Second);
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
+                #endregion
             }
             catch (RelayNotActiveException ex)
             {
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ERROR:",
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
                 date.Year,
                 date.Month,
                 date.Day, 
@@ -261,10 +278,13 @@ namespace ExperimentControl
             {
                 
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ERROR:",
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
                 date.Year,
                 date.Month,
-                date.Day, date.Hour, date.Minute,date.Second) + ex.Message;
+                date.Day,
+                date.Hour,
+                date.Minute,
+                date.Second) + ex.Message;
                 using (StreamWriter writer = new StreamWriter("log.txt", true))
                 {
                     writer.WriteLine(str);
@@ -274,7 +294,7 @@ namespace ExperimentControl
             {
                 
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: FATAL ERROR:",
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: FATAL ERROR: ",
                 date.Year,
                 date.Month,
                 date.Day,
@@ -297,21 +317,41 @@ namespace ExperimentControl
         {
             shutterControl.TurnOn();
             Thread.Sleep(2000);//wait 2s to be sure it is stable
-            
-            for (int i = 0; i < 10; i++)
+            try
             {
-                nikonCamera.Snap();
-                Thread.Sleep(2000);  //need more reflexion on the value and timing accuracy
+                for (int i = 0; i < 10; i++)
+                {
+                    nikonCamera.Snap();
+                    Thread.Sleep(2000);  //need more reflexion on the value and timing accuracy
+                }
             }
-             #region Log
+            catch (TriggerFailedException e)
+            {
+                #region Log
+                DateTime date1 = DateTime.Now;
+                string str1 = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
+                date1.Year,
+                date1.Month,
+                date1.Day,
+                date1.Hour,
+                date1.Minute,
+                date1.Second) +e.Message;
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str1);
+                }
+                #endregion
+            }
+           
+            #region Log
             DateTime date = DateTime.Now;
-            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}:",
+            string str = string.Format("{0:4}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
             date.Year,
             date.Month,
             date.Day,
             date.Hour,
             date.Minute,
-            date.Second) + "Flow Vizualization";
+            date.Second) + " Flow Vizualization";
             using (StreamWriter writer = new StreamWriter("log.txt", true))
             {
                 writer.WriteLine(str);
@@ -347,10 +387,13 @@ namespace ExperimentControl
             catch (RelayNotActiveException ex)
             {
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR:",
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
                 date.Year,
                 date.Month,
-                date.Day, date.Hour, date.Minute) + ex.Message;
+                date.Day,
+                date.Hour,
+                date.Minute,
+                date.Second) + ex.Message;
                 using (StreamWriter writer = new StreamWriter("log.txt", true))
                 {
                     writer.Write(str);

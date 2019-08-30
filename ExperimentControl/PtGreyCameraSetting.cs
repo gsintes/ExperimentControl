@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace ExperimentControl
 {
-    class CameraSetting
+    class PtGreyCameraSetting
     {
         #region Properties declaration
         private readonly float shutter;
@@ -24,7 +24,7 @@ namespace ExperimentControl
         #endregion
 
         #region Constructors
-        public CameraSetting(float shutter = 0.511f, float frameRate = 35, float gain = 0, float brightness = 0)
+        public PtGreyCameraSetting(float shutter = 0.511f, float frameRate = 35, float gain = 0, float brightness = 0)
         {
             this.shutter = shutter;
             this.frameRate = frameRate;
@@ -38,7 +38,7 @@ namespace ExperimentControl
         /// <param name="file">File where the camera settings are written</param>
         /// <exception cref="FormatNotRespectedException">Thrown when the file doesn't respect the expected format</exception>
         /// <exception cref="IOException">Thrown when there is a problem in reading the file</exception>
-        public CameraSetting(string file)
+        public PtGreyCameraSetting(string file)
         {
             bool shutterDone = false;
             bool frDone = false;

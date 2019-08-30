@@ -12,7 +12,7 @@ namespace ExperimentControl
     {
         #region ATTRIBUTES DECLARATION  
         private readonly ManagedCamera cam;
-        private CameraSetting setting;
+        private PtGreyCameraSetting setting;
         #endregion
 
         #region CONSTRUCTORS
@@ -26,7 +26,7 @@ namespace ExperimentControl
         {
             using (ManagedBusManager busMgr = new ManagedBusManager())
             {
-                setting = new CameraSetting();
+                setting = new PtGreyCameraSetting();
                 uint numCameras = busMgr.GetNumOfCameras();
 
                 if (numCameras == 0)
@@ -47,7 +47,7 @@ namespace ExperimentControl
         /// </summary>
         /// <exception cref="NoCameraDetectedException">Thrown if no camera is detected.</exception>
         /// <param name="setting">Setting used for the camera</param>
-        public PtGreyCamera(CameraSetting setting)
+        public PtGreyCamera(PtGreyCameraSetting setting)
         {
             using (ManagedBusManager busMgr = new ManagedBusManager())
             {
@@ -237,18 +237,7 @@ namespace ExperimentControl
                     cam.RetrieveBuffer(rawImage);
                    
                     rawImage.Save(fileName);
-                    DateTime date = DateTime.Now;
-                    string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: TANK PICTURE taken by the Point Grey Camera",
-                    date.Year,
-                    date.Month,
-                    date.Day,
-                    date.Hour,
-                    date.Minute,
-                    date.Second);
-                    using (StreamWriter writer = new StreamWriter("log.txt", true))
-                    {
-                        writer.WriteLine(str);
-                    }
+                    
                 }
                 catch (FC2Exception ex)
                 {
@@ -267,7 +256,7 @@ namespace ExperimentControl
         }
 
         #region Set properties 
-        public void ChangeSetting(CameraSetting setting)
+        public void ChangeSetting(PtGreyCameraSetting setting)
         {
             this.setting = setting;
             SetProp();

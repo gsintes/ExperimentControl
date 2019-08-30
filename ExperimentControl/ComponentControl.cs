@@ -33,7 +33,7 @@ namespace ExperimentControl
             writer.WriteSingleSampleSingleLine(true, true);
             _state = true;
             DateTime date = DateTime.Now;
-            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ",
+            string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ",
             date.Year,
             date.Month,
             date.Day, date.Hour, date.Minute,date.Second) + channelName + " turned on";
@@ -51,7 +51,7 @@ namespace ExperimentControl
             _state = false;
 
             DateTime date = DateTime.Now;
-            string str = string.Format("{0}-{1}-{2},{3}:{4}:{5}: ",
+            string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ",
             date.Year,
             date.Month,
             date.Day,
