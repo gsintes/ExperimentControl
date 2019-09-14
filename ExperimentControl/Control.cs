@@ -322,7 +322,8 @@ namespace ExperimentControl
                 for (int i = 0; i < 10; i++)
                 {
                     nikonCamera.Snap();
-                    Thread.Sleep(2000);  //need more reflexion on the value and timing accuracy
+
+                    Thread.Sleep(900);  //need more reflexion on the value and timing accuracy
                 }
             }
             catch (TriggerFailedException e)
@@ -345,13 +346,13 @@ namespace ExperimentControl
            
             #region Log
             DateTime date = DateTime.Now;
-            string str = string.Format("{0:4}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
+            string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: Flow Vizualization",
             date.Year,
             date.Month,
             date.Day,
             date.Hour,
             date.Minute,
-            date.Second) + " Flow Vizualization";
+            date.Second);
             using (StreamWriter writer = new StreamWriter("log.txt", true))
             {
                 writer.WriteLine(str);

@@ -3,6 +3,8 @@ using CameraControl.Devices.Classes;
 using System.Threading;
 using System;
 using System.IO;
+using NationalInstruments.DAQmx;
+
 
 namespace ExperimentControl
 {
@@ -10,6 +12,8 @@ namespace ExperimentControl
     {
         private readonly CameraDeviceManager deviceManager;
         private readonly string FolderForPhotos;
+        private readonly DOTask control;
+        private readonly DigitalSingleChannelWriter writer;
 
         #region Constructor
         /// <summary>
@@ -18,6 +22,9 @@ namespace ExperimentControl
         /// <exception cref="NoCameraDetectedException">Thrown when their is no camera detected</exception>
         public NikonCamera()
         {
+            control = new DOTask("Dev1/port0/line4", "cam");
+            writer = new DigitalSingleChannelWriter(control.Stream);
+            
             deviceManager = new CameraDeviceManager();
             deviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
             FolderForPhotos = "FlowVisualization";
@@ -28,45 +35,15 @@ namespace ExperimentControl
             }
         
             deviceManager.SelectedCameraDevice.CaptureInSdRam = true;
-            //SetProp("640", "1/80");
         }
         #endregion 
         public void Snap()
         {
-            bool retry = false;
-            int count = 0;
-            do
-            {
-                try
-                {
-                    deviceManager.SelectedCameraDevice.CapturePhotoNoAf();
-                    
-                    
-                }
-                catch (DeviceException ex)
-                {
-                    if ((ex.ErrorCode == ErrorCodes.MTP_Device_Busy ||
-                        ex.ErrorCode == ErrorCodes.ERROR_BUSY))
-                    {
-                        Thread.Sleep(100);
-                        retry = true;
-                        count++;
-                    }
-                }
-            } while (retry && count < 15);
-            Console.WriteLine(count);
-            if (count == 15)
-            {
-                throw new TriggerFailedException();
-            }
-            
+            writer.WriteSingleSampleSingleLine(true, true);
+            Thread.Sleep(100);
+            writer.WriteSingleSampleSingleLine(true, false);
         }
-        public void SetProp(string ISO, string shutter)
-        {
-            deviceManager.SelectedCameraDevice.IsoNumber.Value = ISO;
-            deviceManager.SelectedCameraDevice.ShutterSpeed.Value = shutter;
-
-        }
+      
         private void PhotoCaptured(object o)
         {
             PhotoCapturedEventArgs eventArgs = o as PhotoCapturedEventArgs;
