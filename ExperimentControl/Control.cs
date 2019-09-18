@@ -15,8 +15,8 @@ namespace ExperimentControl
         
 
         private readonly ComponentControl shutterControl;
-        private readonly OnRelayComponentControl lampControl;
-        private readonly OnRelayComponentControl redLampControl;
+        private readonly ComponentControl lampControl;
+        private readonly ComponentControl redLampControl;
 
         private bool _Running = false;
 
@@ -43,8 +43,8 @@ namespace ExperimentControl
             SetTimer();
 
             shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
-            lampControl = new OnRelayComponentControl("Dev1/port0/line1", "Main lamp");
-            redLampControl = new OnRelayComponentControl("Dev1/port0/line2", "Red Lamp");
+            lampControl = new ComponentControl("Dev1/port0/line1", "Main lamp");
+            redLampControl = new ComponentControl("Dev1/port0/line2", "Red Lamp");
             try
             {
                 nikonCamera = new NikonCamera();
@@ -129,12 +129,10 @@ namespace ExperimentControl
         {
             _Running = true;
             
-            RelayVCC.Activate();
             countDay = 0;
             timerD.Start();
             timerO.Start();
-            try
-            {
+          
                 #region Log
                 DateTime date = DateTime.Now;
                 string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
@@ -151,24 +149,7 @@ namespace ExperimentControl
                 #endregion
                 lampControl.TurnOn();
                 redLampControl.TurnOff();
-            }
-            catch (RelayNotActiveException ex)
-            {
-                DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR:",
-                date.Year,
-                date.Month,
-                date.Day,
-                date.Hour,
-                date.Minute,
-                date.Second) + ex.Message;
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
-
-            }
-
+           
             shutterControl.TurnOff();
 
             TankPicture();
@@ -199,28 +180,16 @@ namespace ExperimentControl
             }
             #endregion
 
-            try
-            {
-                countDay = 0;
-                timerD.Stop();
-                timerO.Stop();
-                lampControl.TurnOff();
-                redLampControl.TurnOff();
-                shutterControl.TurnOff();
-                        
-            }
-            catch (RelayNotActiveException)
-            {
-                RelayVCC.Activate();
-                countDay = 0;
-                timerD.Stop();
-                timerO.Stop();
-                lampControl.TurnOff();
-                redLampControl.TurnOff();
-                shutterControl.TurnOff();
+            
+            countDay = 0;
+            timerD.Stop();
+            timerO.Stop();
+            lampControl.TurnOff();
+            redLampControl.TurnOff();
+            shutterControl.TurnOff();
 
-            }
-            RelayVCC.Disactivate();
+
+
         }
        
 
@@ -258,22 +227,7 @@ namespace ExperimentControl
                 }
                 #endregion
             }
-            catch (RelayNotActiveException ex)
-            {
-                DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
-                date.Year,
-                date.Month,
-                date.Day, 
-                date.Hour, 
-                date.Minute,
-                date.Second) + ex.Message;
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
-
-            }
+       
             catch (TriggerFailedException ex)
             {
                 
@@ -371,35 +325,19 @@ namespace ExperimentControl
         /// <param name="e"></param>
         private void OnTimedEventD(Object source, ElapsedEventArgs e)
         {
-            try
+        
+            countDay++;
+            if (countDay % 2 == 0)
             {
-                countDay++;
-                if (countDay % 2 == 0)
-                {
-                    lampControl.TurnOn();
+                lampControl.TurnOn();
                     
-                }
-                else
-                {
-                    lampControl.TurnOff();
- 
-                }
             }
-            catch (RelayNotActiveException ex)
+            else
             {
-                DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
-                date.Year,
-                date.Month,
-                date.Day,
-                date.Hour,
-                date.Minute,
-                date.Second) + ex.Message;
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.Write(str);
-                }
+                lampControl.TurnOff();
+ 
             }
+            
 
         }
 

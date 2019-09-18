@@ -153,10 +153,7 @@
     <Compile Include="ExperimentControl\FormatNotRespectedException.cs" />
     <Compile Include="ExperimentControl\NikonCamera.cs" />
     <Compile Include="ExperimentControl\NoCameraDetectedException.cs" />
-    <Compile Include="ExperimentControl\OnRelayComponentControl.cs" />
     <Compile Include="ExperimentControl\Program.cs" />
-    <Compile Include="ExperimentControl\RelayNotActiveException.cs" />
-    <Compile Include="ExperimentControl\RelayVCC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExperimentControl\PtGreyCamera.cs" />
     <Compile Include="ExperimentControl\SoftwareTriggerNotSupportedException.cs" />
