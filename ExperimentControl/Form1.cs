@@ -68,11 +68,11 @@ namespace ExperimentControl
 
         private void Refreshtimer_Tick(object sender, EventArgs e)
         {
-            laserTxtBox.Text = "Laser Shutter:" + (control.GetShutterState() ? "OPEN" : "CLOSE");
+            laserTxtBox.Text = "Laser Shutter: " + (control.GetShutterState() ? "OPEN" : "CLOSE");
             laserTxtBox.BackColor = control.GetShutterState() ? Color.Green : Color.Red;
-            lampTxtBox.Text = "Main lamp:" + (control.GetLampState() ? "DAY" : "NIGHT");
+            lampTxtBox.Text = "Main lamp: " + (control.GetLampState() ? "DAY" : "NIGHT");
             lampTxtBox.BackColor = control.GetLampState() ? Color.Yellow : Color.Gray;
-            redLampTxtBox.Text = "Red lamp" + (control.GetRedLampState() ? "ON" : "OFF");
+            redLampTxtBox.Text = "Red lamp: " + (control.GetRedLampState() ? "ON" : "OFF");
             redLampTxtBox.BackColor = control.GetRedLampState() ? Color.Green : Color.Red;
         }
     }

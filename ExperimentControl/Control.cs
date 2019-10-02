@@ -14,9 +14,9 @@ namespace ExperimentControl
         #region Attributes declaration 
         
 
-        private readonly ComponentControl shutterControl;
-        private readonly ComponentControl lampControl;
-        private readonly ComponentControl redLampControl;
+        private readonly IDigitalComponent shutterControl;
+        private readonly IDigitalComponent lampControl;
+        private readonly IDigitalComponent redLampControl;
 
         private bool _Running = false;
 
@@ -43,8 +43,8 @@ namespace ExperimentControl
             SetTimer();
 
             shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
-            lampControl = new ComponentControl("Dev1/port0/line1", "Main lamp");
-            redLampControl = new ComponentControl("Dev1/port0/line2", "Red Lamp");
+            lampControl = new RelayBoxComponent("Dev1/port0/line1", "Main lamp");
+            redLampControl = new ComponentControl("Dev1/port0/line2","Red Lamp");
             try
             {
                 nikonCamera = new NikonCamera();
