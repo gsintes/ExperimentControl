@@ -25,8 +25,6 @@ namespace ExperimentControl
             using (_ = File.Create("log.txt"))
             {
             }
-            Traverse trav = new Traverse();
-            trav.Move(250, Direction.Down, 0.25);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
