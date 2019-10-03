@@ -157,7 +157,6 @@
     <Compile Include="ExperimentControl\Program.cs" />
     <Compile Include="ExperimentControl\RedLamp.cs" />
     <Compile Include="ExperimentControl\RelayBoxComponent.cs" />
-    <Compile Include="ExperimentControl\SquareWave.cs" />
     <Compile Include="ExperimentControl\Traverse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExperimentControl\PtGreyCamera.cs" />

@@ -4,46 +4,96 @@ using System;
 
 namespace ExperimentControl
 {
+    internal enum Direction { Up, Down };
     class Traverse
     {
-        Task analogOutTask;
+        #region Attributes
+        private readonly DOTask dirTask;
+        private readonly DigitalSingleChannelWriter dirWriter;
+        private readonly DOTask pulse;
+        private readonly DigitalSingleChannelWriter pulseWriter;
+        private const double STEP = 250e-4; // in mm
+        #endregion
+
+        #region Constructors
         public Traverse()
         {
-            analogOutTask = new Task();
-            analogOutTask.AOChannels.CreateVoltageChannel(
-                "dev1/ao0",
-                "",
-                -5,
-                5,
-                AOVoltageUnits.Volts
-                );
-            analogOutTask.Control(TaskAction.Verify);
-            
+            dirTask = new DOTask("dev1/port0/line4", "dir");
+            dirWriter = new DigitalSingleChannelWriter(dirTask.Stream);
+
+            pulse = new DOTask("dev1/port0/line5", "pulse");
+            pulseWriter = new DigitalSingleChannelWriter(pulse.Stream);
+            direction = Direction.Down;
+
+            pulseWriter.WriteSingleSampleSingleLine(true, false);
+            dirWriter.WriteSingleSampleSingleLine(true, false);
+
         }
-        public void GenerateBitSync()
+        #endregion
+        #region Acessors
+        public Direction direction { get; private set; }
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Set the direction of the traverse 
+        /// </summary>
+        private void SetDirection(Direction dir)
         {
+            direction = dir;
+            if (dir == Direction.Up)
+            {
+                dirWriter.WriteSingleSampleSingleLine(true, true);
+            }
+            else
+            {
+                dirWriter.WriteSingleSampleSingleLine(true, false);
 
-            double freq = 1;
-            int samplesPerCycle = 6;
-            int cyclesPerBuffer = 10;
-            double lowVal = 0;
-            double highVal = 5;
+            }
 
-            SquareWave square = new SquareWave(analogOutTask.Timing, freq, samplesPerCycle, cyclesPerBuffer, lowVal, highVal);
-            analogOutTask.Timing.ConfigureSampleClock("", square.ResultingSampleClockRate, SampleClockActiveEdge.Rising, SampleQuantityMode.ContinuousSamples, square.Data.Length);
-            AnalogSingleChannelWriter writer = new AnalogSingleChannelWriter(analogOutTask.Stream);
-
-            writer.WriteMultiSample(true, square.Data);
-
-//            int p = Convert.ToInt32(1 / square.ResultingSampleClockRate);
-//
-//            for (int i = 0; i < square.Data.Length; i++)
-//            {
-//                double data = square.Data[i];
-//                writer.WriteSingleSample(true, data);
-//                Thread.Sleep(2000);
-//            }
         }
+      
+
+        /// <summary>
+        /// Do a step of the traverse in the current direction
+        /// </summary>
+        private void Step()
+        {
+            pulseWriter.WriteSingleSampleSingleLine(true, true);
+            pulseWriter.WriteSingleSampleSingleLine(true, false);
+        }
+        /// <summary>
+        /// Move the traverse 
+        /// </summary>
+        /// <param name="nbStep">Number of steps the traverse will do</param>
+        /// <param name="dir">Direction of the moving traverse (up or down) </param>
+        /// <param name="pause">Time of pause between each step </param>
+        private void MoveStep(int nbStep, Direction dir, int pause )
+        {
+            SetDirection(dir);
+            for (int i=0; i<nbStep; i++)
+            {
+                Step();
+                Thread.Sleep(pause);
+            }
+        }
+        /// <summary>
+        /// Move the traverse
+        /// </summary>
+        /// <param name="distance">Distance on which the traverse should move, in millimeter </param>
+        /// <param name="dir">Direction of the moving traverse (up or down)</param>
+        /// <param name="speed">Speed at which the traverse should move, in millimeter/second</param>
+        public void Move(double distance, Direction dir, double speed)
+        {
+            int nbStep = Convert.ToInt32(distance / STEP);
+            int pause = Convert.ToInt32(1000 * STEP / speed);
+            MoveStep(nbStep, dir, pause);
+        }
+
+        #endregion
+
+        
 
     }
 }
