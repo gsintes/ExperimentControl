@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExperimentControl\IControl.cs" />
     <Compile Include="ExperimentControl\IDigitalComponent.cs" />
     <Compile Include="ExperimentControl\NikonCameraSetting.cs" />
     <Compile Include="ExperimentControl\PtGreyCameraSetting.cs" />

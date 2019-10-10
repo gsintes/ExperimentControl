@@ -7,7 +7,7 @@ namespace ExperimentControl
 {
     public partial class Form1 : Form
     {
-        private Control control;
+        private IControl control;
         public Form1()
         {
             

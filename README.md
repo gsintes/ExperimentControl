@@ -14,4 +14,4 @@ Files Gestion:
 	Generate a folder Date_Experiment in Document/ExperimentResults (then everything is in this folder)
 	Generate a log.txt
 	Read Setting.txt for the Pt Grey Camera, number need to be given as float (even integer must take a .)
-	Create a folder TankPictures zhere all the pictures of the tank will be saved im_date.bmp
+	Create a folder TankPictures where all the pictures of the tank will be saved im_date.bmp, idem with FlowVisualisation

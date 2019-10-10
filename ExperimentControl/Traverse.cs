@@ -30,6 +30,7 @@ namespace ExperimentControl
 
         }
         #endregion
+
         #region Acessors
         public Direction direction { get; private set; }
         #endregion
@@ -92,8 +93,5 @@ namespace ExperimentControl
         }
 
         #endregion
-
-        
-
     }
 }

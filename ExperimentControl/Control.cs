@@ -9,7 +9,7 @@ namespace ExperimentControl
     /// <summary>
     /// Control the experiment
     /// </summary>
-    class Control
+    class Control : IControl
     {
         #region Attributes declaration 
         
@@ -66,7 +66,7 @@ namespace ExperimentControl
             }
         }
         #endregion
-
+        
         #region Methods
         ///<summary>
         ///Create 2 timers one with a period of 12 hours, one with 1h.
@@ -187,9 +187,6 @@ namespace ExperimentControl
             lampControl.TurnOff();
             redLampControl.TurnOff();
             shutterControl.TurnOff();
-
-
-
         }
        
 
