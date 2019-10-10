@@ -4,8 +4,8 @@ using System;
 
 namespace ExperimentControl
 {
-    internal enum Direction { Up, Down };
-    class Traverse
+    public  enum Direction { Up, Down };
+    public class Traverse
     {
         #region Attributes
         private readonly DOTask dirTask;

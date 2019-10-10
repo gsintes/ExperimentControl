@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace ExperimentControl
 {
-    class PtGreyCameraSetting
+    public class PtGreyCameraSetting
     {
         #region Properties declaration
         private readonly float shutter;

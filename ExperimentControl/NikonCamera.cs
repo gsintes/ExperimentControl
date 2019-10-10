@@ -8,7 +8,7 @@ using NationalInstruments.DAQmx;
 
 namespace ExperimentControl
 {
-    class NikonCamera
+    public class NikonCamera
     {
         private readonly CameraDeviceManager deviceManager;
         private readonly string FolderForPhotos;

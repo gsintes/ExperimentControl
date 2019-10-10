@@ -137,12 +137,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExperimentControl\IControl.cs" />
+    <Compile Include="ExperimentControl\Experiments\Experience1.cs" />
+    <Compile Include="ExperimentControl\Experiments\IControl.cs" />
     <Compile Include="ExperimentControl\IDigitalComponent.cs" />
     <Compile Include="ExperimentControl\NikonCameraSetting.cs" />
     <Compile Include="ExperimentControl\PtGreyCameraSetting.cs" />
     <Compile Include="ExperimentControl\ComponentControl.cs" />
-    <Compile Include="ExperimentControl\Control.cs" />
+    <Compile Include="ExperimentControl\Experiments\AControl.cs" />
     <Compile Include="ExperimentControl\DOTask.cs" />
     <Compile Include="ExperimentControl\ExternalTriggerNotSupportedException.cs" />
     <Compile Include="ExperimentControl\FileCamSettingGenerator.cs" />

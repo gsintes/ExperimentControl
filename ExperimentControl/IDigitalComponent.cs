@@ -1,6 +1,6 @@
 ﻿namespace ExperimentControl
 {
-    interface IDigitalComponent
+    public interface IDigitalComponent
     {
         bool State
         {

@@ -8,7 +8,7 @@ namespace ExperimentControl
     /// <summary>
     /// Enable the control of the point grey camera.
     /// </summary>
-    class PtGreyCamera
+    public class PtGreyCamera
     {
         #region ATTRIBUTES DECLARATION  
         private readonly ManagedCamera cam;
