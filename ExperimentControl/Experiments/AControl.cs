@@ -22,7 +22,7 @@ namespace ExperimentControl.Experiments
         protected readonly NikonCamera nikonCamera;
 
 
-        protected int countDay;
+        
 
         public bool Running { get; protected set; } = false;
         #endregion
@@ -69,6 +69,7 @@ namespace ExperimentControl.Experiments
         ///Create timers
         ///</summary>
         protected abstract void SetTimer();
+        protected abstract void StartTimer();
         /// <summary>
         /// Stop timers
         /// </summary>
@@ -107,7 +108,29 @@ namespace ExperimentControl.Experiments
         ///<summary>
         ///Start the experiment by starting the timers, turning the main lamp ON, putting the shutter and the red lamp at  LOW. It takes a picture with the Point Grey+ red Light.
         /// </summary>
-        public abstract void Start();
+        public virtual void Start()
+        {
+            Running = true;
+            StartTimer();
+
+            #region Log
+            DateTime date = DateTime.Now;
+            string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
+            date.Year,
+            date.Month,
+            date.Day,
+            date.Hour,
+            date.Minute,
+            date.Second) + " START: Beginning of the experiment";
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
+            #endregion
+            lampControl.TurnOff();
+            redLampControl.TurnOff();
+            shutterControl.TurnOff();
+        }
 
 
         ///<summary>
@@ -133,7 +156,7 @@ namespace ExperimentControl.Experiments
             #endregion
 
             
-            countDay = 0;
+            
             StopTimer();
             lampControl.TurnOff();
             redLampControl.TurnOff();
@@ -174,10 +197,8 @@ namespace ExperimentControl.Experiments
                 date1.Hour,
                 date1.Minute,
                 date1.Second) +e.Message;
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str1);
-                }
+                using StreamWriter writer = new StreamWriter("log.txt", true);
+                writer.WriteLine(str1);
                 #endregion
             }
            

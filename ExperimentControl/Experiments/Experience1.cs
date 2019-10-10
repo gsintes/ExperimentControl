@@ -1,23 +1,26 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using System.Windows.Forms;
 using System.Timers;
+
 
 
 namespace ExperimentControl.Experiments
 {
     /// <summary>
-    /// 
+    /// Experiment with : a 12h day/night cycle,
+    /// every hour we do a flow visualisation with 10 Nikon pictures with 1s gap,
+    /// a tank picture with the point grey.
     /// </summary>
-    sealed class Experience1 : AControl
+    sealed class Experiment1 : AControl
     {
         #region Attributes
         private System.Timers.Timer timerD;
         private System.Timers.Timer timerO;
+        private int countDay = 0;
         #endregion
 
-        public Experience1() : base()
+        public Experiment1() : base()
         {
         }
 
@@ -32,20 +35,19 @@ namespace ExperimentControl.Experiments
         protected override void SetTimer()
         {
             this.timerD = new System.Timers.Timer();
-            timerD.Interval = 12 * 3600 * 1000;// 12h in ms
-
             this.timerO = new System.Timers.Timer();
-            timerO.Interval = 1 * 3600 * 1000;// 1h in ms
 
-            // Hook up the Elapsed event for the timer. 
+            timerD.Interval = 12 * 60 * 60 * 1000;
+            timerO.Interval = 60* 60 * 1000;
+
             timerD.Elapsed += OnTimedEventD;
-            timerD.AutoReset = true;
-            timerD.Enabled = false;
-
             timerO.Elapsed += OnTimedEventO;
-            timerO.AutoReset = true;
+
+            timerD.Enabled = false;
             timerO.Enabled = false;
 
+            timerD.AutoReset = true;
+            timerO.AutoReset = true;
         }
         /// <summary>
         /// Stop timers
@@ -55,42 +57,22 @@ namespace ExperimentControl.Experiments
             timerD.Stop();
             timerO.Stop();
         }
-
+        protected override void StartTimer()
+        {
+            timerD.Start();
+            timerO.Start();
+        }
 
         ///<summary>
         ///Start the experiment by starting the timers, turning the main lamp ON, putting the shutter and the red lamp at  LOW. It takes a picture with the Point Grey+ red Light.
         /// </summary>
-        public override void Start()
-            {
-                Running = true;
+        public override void Start() 
+        {
+            base.Start();
+            TankPicture();
+            FlowVisualization();
 
-                countDay = 0;
-                timerD.Start();
-                timerO.Start();
-
-                #region Log
-                DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
-                date.Year,
-                date.Month,
-                date.Day,
-                date.Hour,
-                date.Minute,
-                date.Second) + " START: Beginning of the experiment";
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
-                #endregion
-                lampControl.TurnOn();
-                redLampControl.TurnOff();
-
-                shutterControl.TurnOff();
-
-                TankPicture();
-                FlowVisualization();
-
-            }
+        }
 
             ///<summary>
             ///Take a picture of the whole tank using the point grey camera as configurated and the red lamp,
@@ -196,7 +178,6 @@ namespace ExperimentControl.Experiments
             {
                 Thread thread = new Thread(HourRoutine);
                 thread.Start();
-
             }
             private void HourRoutine()
             {
@@ -204,6 +185,8 @@ namespace ExperimentControl.Experiments
                 Thread.Sleep(2000);
                 FlowVisualization();
             }
+
+        
         #endregion
         #endregion
 

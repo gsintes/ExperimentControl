@@ -37,10 +37,8 @@ namespace ExperimentControl
             date.Year,
             date.Month,
             date.Day, date.Hour, date.Minute,date.Second) + channelName + " turned on";
-            using (StreamWriter writer = new StreamWriter("log.txt", true))
-            {
-                writer.WriteLine(str);
-            }
+            using StreamWriter writer2 = new StreamWriter("log.txt", true);
+            writer2.WriteLine(str);
         }
         /// <summary>
         /// Turn off the component and update the state
@@ -58,10 +56,8 @@ namespace ExperimentControl
             date.Hour,
             date.Minute,
             date.Second) + channelName + " turned off";
-            using (StreamWriter writer = new StreamWriter("log.txt", true))
-            {
-                writer.WriteLine(str);
-            }
+            using StreamWriter writer2 = new StreamWriter("log.txt", true);
+            writer2.WriteLine(str);
         }
 
     }

@@ -7,14 +7,14 @@ namespace ExperimentControl
 {
     public partial class Form1 : Form
     {
-        private Experiments.IControl control;
+        private readonly Experiments.IControl control;
         public Form1()
         {
             
             try
             {
                 
-                control = new Experiments.Experience1();
+                control = new Experiments.Experiment2();
                 InitializeComponent();
                 refreshTimer.Interval = 1000;
                 refreshTimer.Start();
