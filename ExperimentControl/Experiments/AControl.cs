@@ -69,6 +69,9 @@ namespace ExperimentControl.Experiments
         ///Create timers
         ///</summary>
         protected abstract void SetTimer();
+        /// <summary>
+        /// Start the timers
+        /// </summary>
         protected abstract void StartTimer();
         /// <summary>
         /// Stop timers
@@ -106,7 +109,7 @@ namespace ExperimentControl.Experiments
         #endregion
 
         ///<summary>
-        ///Start the experiment by starting the timers, turning the main lamp ON, putting the shutter and the red lamp at  LOW. It takes a picture with the Point Grey+ red Light.
+        ///Start the experiment by starting the timers, putting the shutter, the red and main lamp at  LOW.
         /// </summary>
         public virtual void Start()
         {
@@ -165,7 +168,7 @@ namespace ExperimentControl.Experiments
 
 
         ///<summary>
-        ///Take a picture of the whole tank using the point grey camera as configurated and the red lamp,
+        ///Take a picture of the whole tank.
         ///Take care of everything (light+camera).
         /// </summary>
         protected abstract void TankPicture();
@@ -220,7 +223,6 @@ namespace ExperimentControl.Experiments
            
 
         }
-
 
         #endregion
     }

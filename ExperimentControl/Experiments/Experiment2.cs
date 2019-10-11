@@ -17,15 +17,22 @@ namespace ExperimentControl.Experiments
         private int count = 1;
 
         #endregion
+        /// <summary>
+        /// Initialize the experiment 
+        /// </summary>
         public Experiment2() : base()
         { }
-
+        /// <summary>
+        /// Start the experiment by setting evything plus taking a first picture
+        /// </summary>
         public override void Start()
         {
             base.Start();
             TankPicture();
         }
-
+        ///<summary>
+        ///Create timers, one with 1min and one with 10mins
+        ///</summary>
         protected override void SetTimer()
         {
             timer10 = new System.Timers.Timer();
@@ -44,19 +51,25 @@ namespace ExperimentControl.Experiments
             timer10.AutoReset = true;
 
         }
-
+        /// <summary>
+        /// Start the timers
+        /// </summary>
         protected override void StartTimer()
         {
             timer10.Start();
             timer1.Start();
         }
-
+        /// <summary>
+        /// Stop the timers
+        /// </summary>
         protected override void StopTimer()
         {
             timer10.Stop();
             timer1.Stop();
         }
-
+        /// <summary>
+        /// Take a picture of the tank with the nikon and the red light
+        /// </summary>
         protected override void TankPicture()
         {
             redLampControl.TurnOn();
@@ -67,12 +80,22 @@ namespace ExperimentControl.Experiments
         }
 
         #region EventHandlers
+        /// <summary>
+        /// Event handler for every 10mins, takes a picture of the tank
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private void OnTimedEvent10(Object source, ElapsedEventArgs e)
         {
             count ++;
             Thread thread = new Thread(TankPicture);
             thread.Start();
         }
+        /// <summary>
+        /// Event handler for every minutes, takes a picture of the tank during the first hour
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private void OnTimedEvent1(Object source, ElapsedEventArgs e)
         {
             if (count < 6 && count % 10 !=0)
@@ -80,6 +103,7 @@ namespace ExperimentControl.Experiments
                 Thread thread = new Thread(TankPicture);
                 thread.Start();
             }
+
         }
 
         #endregion
