@@ -10,24 +10,48 @@ namespace ExperimentControl
         private readonly Experiments.IControl control;
         public Form1()
         {
-            
             try
             {
-                
-                control = new Experiments.Experiment2();
                 InitializeComponent();
                 refreshTimer.Interval = 1000;
                 refreshTimer.Start();
-                
+                control = new Experiments.Experiment2();
             }
-            catch( FormatNotRespectedException )
+            catch (FormatNotRespectedException)
             {
-                MessageBox.Show("The setting file doesn't respect the format, modify it and retry.","Error",MessageBoxButtons.OK);
+                MessageBox.Show("The setting file doesn't respect the format, modify it and retry.", "Error", MessageBoxButtons.OK);
             }
             catch (NoCameraDetectedException)
             {
                 MessageBox.Show("No camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
-
+            }
+        }
+        public Form1(Experiments.Experiments exp)
+        {
+            
+            try
+            {
+                InitializeComponent();
+                refreshTimer.Interval = 1000;
+                refreshTimer.Start();
+                switch (exp)
+                {
+                    case Experiments.Experiments.Exp1:
+                        control = new Experiments.Experiment1();
+                        break;
+                    case Experiments.Experiments.Exp2:
+                        control = new Experiments.Experiment2();
+                        break;
+                }
+                
+            }
+            catch (FormatNotRespectedException)
+            {
+                MessageBox.Show("The setting file doesn't respect the format, modify it and retry.", "Error", MessageBoxButtons.OK);
+            }
+            catch (NoCameraDetectedException)
+            {
+                MessageBox.Show("No camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
             }
         }
 
@@ -61,7 +85,6 @@ namespace ExperimentControl
             {
                 Thread thread = new Thread(control.Start);
                 thread.Start();
-
             }
             
         }

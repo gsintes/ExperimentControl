@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExperimentControl.Experiments
 {
+    public enum Experiments { Exp1 = 1, Exp2 };
     interface IControl
     {
         /// <summary>

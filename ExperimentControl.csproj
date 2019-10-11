@@ -146,6 +146,12 @@
     <Compile Include="ExperimentControl\Experiments\Experiment1.cs" />
     <Compile Include="ExperimentControl\Experiments\Experiment2.cs" />
     <Compile Include="ExperimentControl\Experiments\IControl.cs" />
+    <Compile Include="ExperimentControl\Form2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExperimentControl\Form2.Designer.cs">
+      <DependentUpon>Form2.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExperimentControl\IDigitalComponent.cs" />
     <Compile Include="ExperimentControl\NikonCameraSetting.cs" />
     <Compile Include="ExperimentControl\PtGreyCameraSetting.cs" />
@@ -173,6 +179,9 @@
     <Compile Include="ExperimentControl\TriggerFailedException.cs" />
     <EmbeddedResource Include="ExperimentControl\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExperimentControl\Form2.resx">
+      <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
