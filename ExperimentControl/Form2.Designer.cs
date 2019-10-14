@@ -35,7 +35,7 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(140, 66);
+            this.comboBox1.Location = new System.Drawing.Point(154, 89);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 0;
@@ -43,7 +43,7 @@
             // 
             // launchButton
             // 
-            this.launchButton.Location = new System.Drawing.Point(162, 110);
+            this.launchButton.Location = new System.Drawing.Point(176, 116);
             this.launchButton.Name = "launchButton";
             this.launchButton.Size = new System.Drawing.Size(75, 23);
             this.launchButton.TabIndex = 1;
@@ -59,8 +59,7 @@
             this.Controls.Add(this.launchButton);
             this.Controls.Add(this.comboBox1);
             this.Name = "Form2";
-            this.Text = "Form2";
-  
+            this.Text = "Select experiment";
             this.ResumeLayout(false);
 
         }

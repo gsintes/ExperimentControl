@@ -5,6 +5,9 @@ using System.Windows.Forms;
 
 namespace ExperimentControl
 {
+    /// <summary>
+    /// Form  displayed while the experiment is running
+    /// </summary>
     public partial class Form1 : Form
     {
         private readonly Experiments.IControl control;
@@ -53,6 +56,8 @@ namespace ExperimentControl
             {
                 MessageBox.Show("No camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
             }
+            this.Name = exp.ToString();
+            this.Text = exp.ToString();
         }
 
 

@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace ExperimentControl
 {
+    /// <summary>
+    /// Main form that is used to select the experiement and then closed
+    /// </summary>
     public partial class Form2 : Form
     {
         public Form2()
