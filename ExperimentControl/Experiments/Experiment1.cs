@@ -197,6 +197,13 @@ namespace ExperimentControl.Experiments
             FlowVisualization();
         }
 
+        protected override string ProtocolDescription()
+        {
+            string res = "We are using protocol : Experiement1.\nCreated to control the main experiment, there are two timers: 12h and 1h.Every 12h, we switch between day and night.Every hour," +
+                " we take first a picture of the tank with the Point Grtey, then a visualisation of the flow, ie 10 pictures of the laser sheet with the Nikon with 1s pause. The is no movement of the tank ";
+            return res;
+        }
+
         #endregion
         #endregion
 

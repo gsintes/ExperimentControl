@@ -61,6 +61,8 @@ namespace ExperimentControl.Experiments
             {
                 ptGreyCamera = new PtGreyCamera();
             }
+            using StreamWriter writer = new StreamWriter("log.txt", true);
+            writer.WriteLine(ProtocolDescription());
         }
         #endregion
 
@@ -77,6 +79,8 @@ namespace ExperimentControl.Experiments
         /// Stop timers
         /// </summary>
         protected abstract void StopTimer();
+
+        protected abstract string ProtocolDescription();
       
         #region Assessors
         ///<summary>

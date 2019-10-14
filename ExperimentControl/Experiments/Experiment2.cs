@@ -106,6 +106,12 @@ namespace ExperimentControl.Experiments
 
         }
 
+        protected override string ProtocolDescription()
+        {
+            string res = "We are using protocol : Experiement2.\nCreated to control the test experiment in the small tank and in the dark, there are two timers: 1min and 10min. During the first hour we take one picture of the tank every minute and then every 10min. The tank picutres are taken using the Nikon camera and the red lamp.";
+            return res;
+        }
+
         #endregion
     }
 }
