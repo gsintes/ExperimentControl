@@ -22,7 +22,7 @@ namespace ExperimentControl
         /// <exception cref="NoCameraDetectedException">Thrown when their is no camera detected</exception>
         public NikonCamera()
         {
-            control = new DOTask("Dev1/port0/line3", "cam");
+            control = new DOTask(System.Configuration.ConfigurationManager.AppSettings["NikonTrigger"], "cam");
             writer = new DigitalSingleChannelWriter(control.Stream);
             
             deviceManager = new CameraDeviceManager();

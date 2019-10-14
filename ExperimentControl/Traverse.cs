@@ -1,6 +1,7 @@
 ﻿using NationalInstruments.DAQmx;
 using System.Threading;
 using System;
+using System.Configuration;
 
 namespace ExperimentControl
 {
@@ -18,10 +19,10 @@ namespace ExperimentControl
         #region Constructors
         public Traverse()
         {
-            dirTask = new DOTask("dev1/port0/line4", "dir");
+            dirTask = new DOTask(ConfigurationManager.AppSettings["TravDir"], "dir");
             dirWriter = new DigitalSingleChannelWriter(dirTask.Stream);
 
-            pulse = new DOTask("dev1/port0/line5", "pulse");
+            pulse = new DOTask(ConfigurationManager.AppSettings["TravPulse"], "pulse");
             pulseWriter = new DigitalSingleChannelWriter(pulse.Stream);
             direction = Direction.Down;
 

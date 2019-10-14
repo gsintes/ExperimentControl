@@ -35,7 +35,7 @@ namespace ExperimentControl
             try
             {
                 InitializeComponent();
-                refreshTimer.Interval = 1000;
+                refreshTimer.Interval = 500;
                 refreshTimer.Start();
                 switch (exp)
                 {

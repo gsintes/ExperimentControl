@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using System.Timers;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
@@ -35,12 +35,12 @@ namespace ExperimentControl.Experiments
         /// <exception cref="NoCameraDetectedException">Thrown when there isn't any camera detected</exception>
         public AControl()
         {
- 
+
             SetTimer();
 
-            shutterControl = new ComponentControl("Dev1/port0/line0", "Shutter");
-            lampControl = new RelayBoxComponent("Dev1/port0/line1", "Main lamp");
-            redLampControl = new ComponentControl("Dev1/port0/line2","Red Lamp");
+            shutterControl = new ComponentControl(ConfigurationManager.AppSettings["Shutter"], "Shutter");
+            lampControl = new RelayBoxComponent(ConfigurationManager.AppSettings["LampControl"], "Main lamp");
+            redLampControl = new ComponentControl(ConfigurationManager.AppSettings["RedLampControl"], "Red Lamp");
             traverse = new Traverse();
             try
             {

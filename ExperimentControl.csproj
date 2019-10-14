@@ -128,6 +128,7 @@
       <HintPath>packages\Rssdp.4.0.2\lib\net45\Rssdp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
