@@ -27,3 +27,4 @@ Creating a new protocol:
 		Implement the methods needed (if you don't want to do one of them create the header of the method and just throw NotImplementedException)
 		Add the name of the experiment to the enum in IControl
 		Add the new experiment constructor in Form1 constructor
+		Edit ExpInfo.html

@@ -27,6 +27,8 @@ namespace ExperimentControl
             
             deviceManager = new CameraDeviceManager();
             deviceManager.PhotoCaptured += DeviceManager_PhotoCaptured;
+            deviceManager.CameraConnected += DeviceManager_CameraConnected;
+            deviceManager.CameraDisconnected += DeviceManager_CameraDisconnected;
             FolderForPhotos = "FlowVisualization";
             bool ok=deviceManager.ConnectToCamera();
             if (!ok)
@@ -36,7 +38,33 @@ namespace ExperimentControl
         
             deviceManager.SelectedCameraDevice.CaptureInSdRam = true;
         }
-        #endregion 
+
+        private void DeviceManager_CameraDisconnected(ICameraDevice cameraDevice)
+        {
+            DateTime date = DateTime.Now;
+            string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR: Nikon Camera disconnected",
+            date.Year,
+            date.Month,
+            date.Day, date.Hour, date.Minute);
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
+        }
+
+        private void DeviceManager_CameraConnected(ICameraDevice cameraDevice)
+        {
+            DateTime date = DateTime.Now;
+            string str = string.Format("{0}-{1}-{2},{3}:{4}: Nikon Camera connected",
+            date.Year,
+            date.Month,
+            date.Day, date.Hour, date.Minute);
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
+        }
+        #endregion
         public void Snap()
         {
             writer.WriteSingleSampleSingleLine(true, true);

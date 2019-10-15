@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Timers;
 using System.Threading;
 
@@ -75,8 +76,23 @@ namespace ExperimentControl.Experiments
             redLampControl.TurnOn();
             Thread.Sleep(500);
             nikonCamera.Snap();
+            DateTime date = DateTime.Now;
+            #region Log
+            string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: TANK PICTURE taken",
+            date.Year,
+            date.Month,
+            date.Day,
+            date.Hour,
+            date.Minute,
+            date.Second);
+            using (StreamWriter writer = new StreamWriter("log.txt", true))
+            {
+                writer.WriteLine(str);
+            }
+            #endregion
             Thread.Sleep(2000);
             redLampControl.TurnOff();
+
         }
 
         #region EventHandlers
