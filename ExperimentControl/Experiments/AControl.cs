@@ -19,10 +19,11 @@ namespace ExperimentControl.Experiments
         protected readonly IDigitalComponent redLampControl;
         protected readonly Traverse traverse;
         protected readonly PtGreyCamera ptGreyCamera;
-        protected readonly NikonCamera nikonCamera;
+        protected  NikonCamera nikonCamera;
+        private System.Timers.Timer timerNikon;
 
 
-        
+
 
         public bool Running { get; protected set; } = false;
         #endregion
@@ -37,6 +38,13 @@ namespace ExperimentControl.Experiments
         {
 
             SetTimer();
+
+            timerNikon = new System.Timers.Timer();
+            timerNikon.Interval = 6 * 3600 * 1000;
+            timerNikon.Enabled = false;
+            timerNikon.AutoReset = true;
+            timerNikon.Elapsed += TimerNikon_Elapsed;
+
 
             shutterControl = new ComponentControl(ConfigurationManager.AppSettings["Shutter"], "Shutter");
             lampControl = new RelayBoxComponent(ConfigurationManager.AppSettings["LampControl"], "Main lamp");
@@ -63,6 +71,44 @@ namespace ExperimentControl.Experiments
             }
             using StreamWriter writer = new StreamWriter("log.txt", true);
             writer.WriteLine(ProtocolDescription());
+        }
+
+        private void TimerNikon_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                nikonCamera = new NikonCamera();
+                #region Log
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: Nikon camera reinitialized",
+                date.Year,
+                date.Month,
+                date.Day,
+                date.Hour,
+                date.Minute,
+                date.Second);
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
+                #endregion
+            }
+            catch (NoCameraDetectedException ex)
+            {
+                #region Log
+                DateTime date1 = DateTime.Now;
+                string str1 = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
+                date1.Year,
+                date1.Month,
+                date1.Day,
+                date1.Hour,
+                date1.Minute,
+                date1.Second) + ex.Message;
+                using StreamWriter writer = new StreamWriter("log.txt", true);
+                writer.WriteLine(str1);
+                #endregion
+                MessageBox.Show("No Nikon camera detected. Check if it is on.", "Error", MessageBoxButtons.OK);
+            }
         }
         #endregion
 

@@ -37,11 +37,12 @@ namespace ExperimentControl
             this.refreshTimer = new System.Windows.Forms.Timer(this.components);
             this.lampTxtBox = new System.Windows.Forms.TextBox();
             this.redLampTxtBox = new System.Windows.Forms.TextBox();
+            this.runTxtBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(12, 12);
+            this.startButton.Location = new System.Drawing.Point(62, 50);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(75, 23);
             this.startButton.TabIndex = 0;
@@ -51,7 +52,7 @@ namespace ExperimentControl
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(12, 59);
+            this.stopButton.Location = new System.Drawing.Point(62, 79);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(75, 23);
             this.stopButton.TabIndex = 1;
@@ -67,6 +68,7 @@ namespace ExperimentControl
             this.laserTxtBox.Size = new System.Drawing.Size(194, 20);
             this.laserTxtBox.TabIndex = 2;
             this.laserTxtBox.Text = "Laser Shutter: CLOSE";
+            this.laserTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // refreshTimer
             // 
@@ -80,6 +82,7 @@ namespace ExperimentControl
             this.lampTxtBox.Size = new System.Drawing.Size(194, 20);
             this.lampTxtBox.TabIndex = 3;
             this.lampTxtBox.Text = "Main lamp: NIGHT";
+            this.lampTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // redLampTxtBox
             // 
@@ -89,12 +92,24 @@ namespace ExperimentControl
             this.redLampTxtBox.Size = new System.Drawing.Size(194, 20);
             this.redLampTxtBox.TabIndex = 4;
             this.redLampTxtBox.Text = "Red lamp: OFF";
+            this.redLampTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // runTxtBox
+            // 
+            this.runTxtBox.BackColor = System.Drawing.Color.Red;
+            this.runTxtBox.Location = new System.Drawing.Point(51, 122);
+            this.runTxtBox.Name = "runTxtBox";
+            this.runTxtBox.Size = new System.Drawing.Size(109, 20);
+            this.runTxtBox.TabIndex = 5;
+            this.runTxtBox.Text = "NOT RUNNING";
+            this.runTxtBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.runTxtBox);
             this.Controls.Add(this.redLampTxtBox);
             this.Controls.Add(this.lampTxtBox);
             this.Controls.Add(this.laserTxtBox);
@@ -115,6 +130,7 @@ namespace ExperimentControl
         private System.Windows.Forms.Timer refreshTimer;
         private System.Windows.Forms.TextBox lampTxtBox;
         private System.Windows.Forms.TextBox redLampTxtBox;
+        private System.Windows.Forms.TextBox runTxtBox;
     }
 }
 

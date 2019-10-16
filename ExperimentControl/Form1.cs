@@ -102,6 +102,10 @@ namespace ExperimentControl
             lampTxtBox.BackColor = control.GetLampState() ? Color.Yellow : Color.Gray;
             redLampTxtBox.Text = "Red lamp: " + (control.GetRedLampState() ? "ON" : "OFF");
             redLampTxtBox.BackColor = control.GetRedLampState() ? Color.Green : Color.Red;
+            runTxtBox.Text = control.Running ? "RUNNING" : "NOT RUNNING";
+            runTxtBox.BackColor = control.Running ? Color.Green : Color.Red;
         }
+
+        
     }
 }

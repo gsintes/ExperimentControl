@@ -77,6 +77,15 @@ namespace ExperimentControl
             PhotoCapturedEventArgs eventArgs = o as PhotoCapturedEventArgs;
             if (eventArgs == null)
             {
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR: Download photo from the camera: no argument given.",
+                date.Year,
+                date.Month,
+                date.Day, date.Hour, date.Minute);
+                using (StreamWriter writer = new StreamWriter("log.txt", true))
+                {
+                    writer.WriteLine(str);
+                }
                 return;
             }
             try
