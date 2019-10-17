@@ -4,7 +4,7 @@ using System.Timers;
 using System.Threading;
 
 
-namespace ExperimentControl.Experiments
+namespace ExperimentControl.ExperimentControl.Experiments
 {   
     /// <summary>
     /// Experiemnt where we just use the red lamp and the nikon camera.

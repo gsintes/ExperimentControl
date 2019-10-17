@@ -5,7 +5,7 @@ using System.Timers;
 
 
 
-namespace ExperimentControl.Experiments
+namespace ExperimentControl.ExperimentControl.Experiments
 {
     /// <summary>
     /// Experiment with : a 12h day/night cycle,
@@ -108,10 +108,8 @@ namespace ExperimentControl.Experiments
                 date.Hour,
                 date.Minute,
                 date.Second);
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
+                using StreamWriter writer = new StreamWriter("log.txt", true);
+                writer.WriteLine(str);
                 #endregion
             }
 
@@ -126,10 +124,8 @@ namespace ExperimentControl.Experiments
                 date.Hour,
                 date.Minute,
                 date.Second) + ex.Message;
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
+                using StreamWriter writer = new StreamWriter("log.txt", true);
+                writer.WriteLine(str);
             }
             catch (Exception ex)
             {

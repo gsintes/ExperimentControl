@@ -81,7 +81,7 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>ExperimentControl.Program</StartupObject>
+    <StartupObject>ExperimentControl.ExperimentControl.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accord, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
@@ -156,6 +156,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExperimentControl\Experiments\Experiement3.cs" />
     <Compile Include="ExperimentControl\Experiments\Experiment1.cs" />
     <Compile Include="ExperimentControl\Experiments\Experiment2.cs" />
     <Compile Include="ExperimentControl\Experiments\IControl.cs" />
@@ -183,7 +184,6 @@
     <Compile Include="ExperimentControl\NikonCamera.cs" />
     <Compile Include="ExperimentControl\NoCameraDetectedException.cs" />
     <Compile Include="ExperimentControl\Program.cs" />
-    <Compile Include="ExperimentControl\RedLamp.cs" />
     <Compile Include="ExperimentControl\RelayBoxComponent.cs" />
     <Compile Include="ExperimentControl\Traverse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -6,7 +6,7 @@ using System.IO;
 using NationalInstruments.DAQmx;
 
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     public class NikonCamera
     {
@@ -46,10 +46,8 @@ namespace ExperimentControl
             date.Year,
             date.Month,
             date.Day, date.Hour, date.Minute);
-            using (StreamWriter writer = new StreamWriter("log.txt", true))
-            {
-                writer.WriteLine(str);
-            }
+            using StreamWriter writerL = new StreamWriter("log.txt", true);
+            writerL.WriteLine(str);
         }
 
         private void DeviceManager_CameraConnected(ICameraDevice cameraDevice)
@@ -59,10 +57,8 @@ namespace ExperimentControl
             date.Year,
             date.Month,
             date.Day, date.Hour, date.Minute);
-            using (StreamWriter writer = new StreamWriter("log.txt", true))
-            {
-                writer.WriteLine(str);
-            }
+            using StreamWriter writerL = new StreamWriter("log.txt", true);
+            writerL.WriteLine(str);
         }
         #endregion
         public void Snap()
@@ -74,18 +70,15 @@ namespace ExperimentControl
       
         private void PhotoCaptured(object o)
         {
-            PhotoCapturedEventArgs eventArgs = o as PhotoCapturedEventArgs;
-            if (eventArgs == null)
+            if (!(o is PhotoCapturedEventArgs eventArgs))
             {
                 DateTime date = DateTime.Now;
                 string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR: Download photo from the camera: no argument given.",
                 date.Year,
                 date.Month,
                 date.Day, date.Hour, date.Minute);
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
+                using StreamWriter writerL = new StreamWriter("log.txt", true);
+                writerL.WriteLine(str);
                 return;
             }
             try
@@ -128,10 +121,8 @@ namespace ExperimentControl
                 date.Year,
                 date.Month,
                 date.Day, date.Hour, date.Minute) + ex.Message;
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
+                using StreamWriter writerLog = new StreamWriter("log.txt", true);
+                writerLog.WriteLine(str);
             }
         }
         private void DeviceManager_PhotoCaptured(object sender, PhotoCapturedEventArgs eventArgs)

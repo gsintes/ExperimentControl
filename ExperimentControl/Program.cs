@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using Nest;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     static class Program
     {
@@ -32,7 +32,7 @@ namespace ExperimentControl
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            Application.Run(new Form2());
+            Application.Run(new ExperimentControl.Form2());
         }
     }
 }

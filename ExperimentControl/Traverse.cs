@@ -3,7 +3,7 @@ using System.Threading;
 using System;
 using System.Configuration;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     public  enum Direction { Up, Down };
     public class Traverse
@@ -24,7 +24,7 @@ namespace ExperimentControl
 
             pulse = new DOTask(ConfigurationManager.AppSettings["TravPulse"], "pulse");
             pulseWriter = new DigitalSingleChannelWriter(pulse.Stream);
-            direction = Direction.Down;
+            Direction = Direction.Down;
 
             pulseWriter.WriteSingleSampleSingleLine(true, false);
             dirWriter.WriteSingleSampleSingleLine(true, false);
@@ -33,7 +33,7 @@ namespace ExperimentControl
         #endregion
 
         #region Acessors
-        public Direction direction { get; private set; }
+        public Direction Direction { get; private set; }
         #endregion
 
         #region Methods
@@ -43,7 +43,7 @@ namespace ExperimentControl
         /// </summary>
         private void SetDirection(Direction dir)
         {
-            direction = dir;
+            Direction = dir;
             if (dir == Direction.Up)
             {
                 dirWriter.WriteSingleSampleSingleLine(true, true);

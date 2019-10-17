@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExperimentControl.Experiments
+namespace ExperimentControl.ExperimentControl.Experiments
 {
     public enum Experiments { Exp1 = 1, Exp2 };
     interface IControl

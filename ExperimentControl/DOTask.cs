@@ -1,7 +1,7 @@
 ﻿using System;
 using NationalInstruments.DAQmx;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     ///<summary>
     ///A digital output task with the physical channel given.

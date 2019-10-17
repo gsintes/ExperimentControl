@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     public class PtGreyCameraSetting
     {

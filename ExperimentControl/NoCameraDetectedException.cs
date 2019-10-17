@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     class NoCameraDetectedException : Exception
     {

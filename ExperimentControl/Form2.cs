@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.Windows.Forms;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     /// <summary>
     /// Main form that is used to select the experiement and then closed
@@ -15,16 +15,10 @@ namespace ExperimentControl
             this.comboBox1.DataSource = Enum.GetValues(typeof(Experiments.Experiments));
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void LaunchButton_Click(object sender, EventArgs e)
         {
-            Experiments.Experiments exp;
-            Enum.TryParse<Experiments.Experiments>(comboBox1.SelectedValue.ToString(), out exp);
-            Form1 form1 = new Form1(exp);
+            Enum.TryParse<Experiments.Experiments>(comboBox1.SelectedValue.ToString(), out Experiments.Experiments exp);
+            using Form1 form1 = new Form1(exp);
             Hide();
             form1.ShowDialog();
             Close();

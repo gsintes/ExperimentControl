@@ -2,7 +2,7 @@
 using NationalInstruments.DAQmx;
 using System.IO;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     /// <summary>
     /// Physical component control which is naturaly off (Turn On and OFF) 

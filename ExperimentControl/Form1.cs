@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     /// <summary>
     /// Form  displayed while the experiment is running

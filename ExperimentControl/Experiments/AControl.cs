@@ -4,7 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
-namespace ExperimentControl.Experiments
+namespace ExperimentControl.ExperimentControl.Experiments
 {
     /// <summary>
     /// Abstract class that define the base for the control the experiment
@@ -20,7 +20,7 @@ namespace ExperimentControl.Experiments
         protected readonly Traverse traverse;
         protected readonly PtGreyCamera ptGreyCamera;
         protected  NikonCamera nikonCamera;
-        private System.Timers.Timer timerNikon;
+        private readonly System.Timers.Timer timerNikon;
 
 
 
@@ -39,10 +39,12 @@ namespace ExperimentControl.Experiments
 
             SetTimer();
 
-            timerNikon = new System.Timers.Timer();
-            timerNikon.Interval = 2 * 3600 * 1000; //we create a timer to reinitialize the nikon to avoid bugs
-            timerNikon.Enabled = false;
-            timerNikon.AutoReset = true;
+            timerNikon = new System.Timers.Timer
+            {
+                Interval = 2 * 3600 * 1000, //we create a timer to reinitialize the nikon to avoid bugs
+                Enabled = false,
+                AutoReset = true
+            };
             timerNikon.Elapsed += TimerNikon_Elapsed;
 
             timerNikon.Start();
@@ -92,10 +94,8 @@ namespace ExperimentControl.Experiments
                 date.Hour,
                 date.Minute,
                 date.Second);
-                using (StreamWriter writer = new StreamWriter("log.txt", true))
-                {
-                    writer.WriteLine(str);
-                }
+                using StreamWriter writer = new StreamWriter("log.txt", true);
+                writer.WriteLine(str);
                 #endregion
             }
             catch (NoCameraDetectedException ex)

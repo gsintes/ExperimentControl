@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     partial class Form1
     {

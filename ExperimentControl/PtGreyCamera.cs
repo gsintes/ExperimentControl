@@ -3,7 +3,7 @@ using System.Text;
 using FlyCapture2Managed;
 using System.IO;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     /// <summary>
     /// Enable the control of the point grey camera.
@@ -24,22 +24,20 @@ namespace ExperimentControl
         /// <exception cref="NoCameraDetectedException">Thrown if no camera is detected.</exception>
         public PtGreyCamera()
         {
-            using (ManagedBusManager busMgr = new ManagedBusManager())
+            using ManagedBusManager busMgr = new ManagedBusManager();
+            setting = new PtGreyCameraSetting();
+            uint numCameras = busMgr.GetNumOfCameras();
+
+            if (numCameras == 0)
             {
-                setting = new PtGreyCameraSetting();
-                uint numCameras = busMgr.GetNumOfCameras();
-
-                if (numCameras == 0)
-                {
-                    throw new NoCameraDetectedException();
-                }
-
-                ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
-
-                cam = new ManagedCamera();
-                cam.Connect(guid);
-                SetProp();
+                throw new NoCameraDetectedException();
             }
+
+            ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
+
+            cam = new ManagedCamera();
+            cam.Connect(guid);
+            SetProp();
         }
         /// <summary>
         ///Initialize a point Grey Camera, it take the first that it detect if their is more than one. 
@@ -49,25 +47,23 @@ namespace ExperimentControl
         /// <param name="setting">Setting used for the camera</param>
         public PtGreyCamera(PtGreyCameraSetting setting)
         {
-            using (ManagedBusManager busMgr = new ManagedBusManager())
+            using ManagedBusManager busMgr = new ManagedBusManager();
+            this.setting = setting;
+            uint numCameras = busMgr.GetNumOfCameras();
+            Console.WriteLine(numCameras);
+            // Finish if there are no cameras
+            if (numCameras == 0)
             {
-                this.setting = setting;
-                uint numCameras = busMgr.GetNumOfCameras();
-                Console.WriteLine(numCameras);
-                // Finish if there are no cameras
-                if (numCameras == 0)
-                {
-                    throw new NoCameraDetectedException();
-                }
-
-                ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
-
-                cam = new ManagedCamera();
-
-                cam.Connect(guid);
-               
-                SetProp();
+                throw new NoCameraDetectedException();
             }
+
+            ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
+
+            cam = new ManagedCamera();
+
+            cam.Connect(guid);
+
+            SetProp();
         }
         #endregion
 
@@ -109,7 +105,7 @@ namespace ExperimentControl
         /// Check if the camera can be triggered by a software
         /// </summary>
         /// <returns>True if it can, false if not</returns>
-        private bool CheckSoftwareTriggerPresence()
+        public bool CheckSoftwareTriggerPresence()
         {
             const uint TriggerInquiry = 0x530;
             uint triggerInquiryValue = cam.ReadRegister(TriggerInquiry);

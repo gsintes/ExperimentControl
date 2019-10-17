@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ExperimentControl
+namespace ExperimentControl.ExperimentControl
 {
     class FileCamSettingGenerator
     {
