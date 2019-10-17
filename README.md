@@ -23,7 +23,7 @@ Files Gestion:
 Creating a new protocol:
 	
 	If you want to create a new protocol:
-		create a class that inherits AControl
+		create a class (prefered a sealed one) that inherits AControl
 		Implement the methods needed (if you don't want to do one of them create the header of the method and just throw NotImplementedException)
 		Add the name of the experiment to the enum in IControl
 		Add the new experiment constructor in Form1 constructor

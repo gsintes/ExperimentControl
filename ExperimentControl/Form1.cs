@@ -37,7 +37,7 @@ namespace ExperimentControl.ExperimentControl
             {
                 InitializeComponent();
                 refreshTimer.Interval = 500;
-                refreshTimer.Start();
+                
                 switch (exp)
                 {
                     case Experiments.Experiments.Exp1:
@@ -46,8 +46,11 @@ namespace ExperimentControl.ExperimentControl
                     case Experiments.Experiments.Exp2:
                         control = new Experiments.Experiment2();
                         break;
+                    case Experiments.Experiments.Exp3:
+                        control = new Experiments.Experiment3();
+                        break;
                 }
-                
+                refreshTimer.Start();
             }
             catch (FormatNotRespectedException)
             {
