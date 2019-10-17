@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Configuration;
+using Nest;
 
 namespace ExperimentControl
 {
@@ -13,6 +14,7 @@ namespace ExperimentControl
         [STAThread]
         static void Main()
         {
+           
             Directory.SetCurrentDirectory(ConfigurationManager.AppSettings["Folder"]);
             DateTime date = DateTime.Now;
             string dirName = string.Format("{0}-{1}-{2}_Experiment",

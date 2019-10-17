@@ -13,6 +13,7 @@ namespace ExperimentControl
         private readonly Experiments.IControl control;
         public Form1()
         {
+            
             try
             {
                 InitializeComponent();

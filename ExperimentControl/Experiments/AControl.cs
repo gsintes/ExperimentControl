@@ -40,11 +40,12 @@ namespace ExperimentControl.Experiments
             SetTimer();
 
             timerNikon = new System.Timers.Timer();
-            timerNikon.Interval = 6 * 3600 * 1000;
+            timerNikon.Interval = 2 * 3600 * 1000; //we create a timer to reinitialize the nikon to avoid bugs
             timerNikon.Enabled = false;
             timerNikon.AutoReset = true;
             timerNikon.Elapsed += TimerNikon_Elapsed;
 
+            timerNikon.Start();
 
             shutterControl = new ComponentControl(ConfigurationManager.AppSettings["Shutter"], "Shutter");
             lampControl = new RelayBoxComponent(ConfigurationManager.AppSettings["LampControl"], "Main lamp");
@@ -72,7 +73,11 @@ namespace ExperimentControl.Experiments
             using StreamWriter writer = new StreamWriter("log.txt", true);
             writer.WriteLine(ProtocolDescription());
         }
-
+        /// <summary>
+        /// Timer event handler to reinitialize the nikon to avoid bugs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerNikon_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
