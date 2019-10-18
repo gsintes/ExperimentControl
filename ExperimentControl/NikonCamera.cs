@@ -42,7 +42,7 @@ namespace ExperimentControl.ExperimentControl
         private void DeviceManager_CameraDisconnected(ICameraDevice cameraDevice)
         {
             DateTime date = DateTime.Now;
-            string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR: Nikon Camera disconnected",
+            string str = string.Format("{0}-{1:00}-{2:00},{3:00}:{4:00}: ERROR: Nikon Camera disconnected",
             date.Year,
             date.Month,
             date.Day, date.Hour, date.Minute);
@@ -53,7 +53,7 @@ namespace ExperimentControl.ExperimentControl
         private void DeviceManager_CameraConnected(ICameraDevice cameraDevice)
         {
             DateTime date = DateTime.Now;
-            string str = string.Format("{0}-{1}-{2},{3}:{4}: Nikon Camera connected",
+            string str = string.Format("{0}-{1:00}-{2:00},{3:00}:{4:00}: Nikon Camera connected",
             date.Year,
             date.Month,
             date.Day, date.Hour, date.Minute);
@@ -73,7 +73,7 @@ namespace ExperimentControl.ExperimentControl
             if (!(o is PhotoCapturedEventArgs eventArgs))
             {
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR: Download photo from the camera: no argument given.",
+                string str = string.Format("{0}-{1:00}-{2:00},{3:00}:{4:00}: ERROR: Download photo from the camera: no argument given.",
                 date.Year,
                 date.Month,
                 date.Day, date.Hour, date.Minute);
@@ -84,11 +84,12 @@ namespace ExperimentControl.ExperimentControl
             try
             {
                 DateTime date = DateTime.Now;
-                string fileName = Path.Combine(FolderForPhotos, String.Format("im_{0}-{1}-{2}_{3}h{4}.TIF",date.Year,
-                date.Month,
-                date.Day,
-                date.Hour,
-                date.Minute));
+                string fileName = Path.Combine(FolderForPhotos, String.Format("im_{0}-{1:00}-{2:00}_{3:00}h{4:00}.TIF", 
+                    date.Year,
+                    date.Month,
+                    date.Day,
+                    date.Hour,
+                    date.Minute));
                 fileName =
                         StaticHelper.GetUniqueFilename(
                             Path.GetDirectoryName(fileName) + "\\" + Path.GetFileNameWithoutExtension(fileName) + "_", 0,
@@ -118,7 +119,7 @@ namespace ExperimentControl.ExperimentControl
             {
                 eventArgs.CameraDevice.IsBusy = false;
                 DateTime date = DateTime.Now;
-                string str = string.Format("{0}-{1}-{2},{3}:{4}: ERROR: Download photo from the camera: ",
+                string str = string.Format("{0}-{1:00}-{2:00},{3:00}:{4:00}: ERROR: Download photo from the camera: ",
                 date.Year,
                 date.Month,
                 date.Day, date.Hour, date.Minute) + ex.Message;

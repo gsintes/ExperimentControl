@@ -92,7 +92,7 @@ namespace ExperimentControl.ExperimentControl.Experiments
                 redLampControl.TurnOn();
                 Thread.Sleep(5000); //wait 5s to be sure it is stable
                 DateTime date = DateTime.Now;
-                ptGreyCamera.Snap(string.Format("TankPictures/im_{0}-{1}-{2}_{3:00}.bmp",
+                ptGreyCamera.Snap(string.Format("TankPictures/im_{0}-{1:00}-{2:00}_{3:00}.bmp",
                 date.Year,
                 date.Month,
                 date.Day,
