@@ -84,7 +84,7 @@ namespace ExperimentControl.ExperimentControl
             try
             {
                 DateTime date = DateTime.Now;
-                string fileName = Path.Combine(FolderForPhotos, String.Format("im_{0}-{1}-{2},{3}:{4}.TIF",date.Year,
+                string fileName = Path.Combine(FolderForPhotos, String.Format("im_{0}-{1}-{2}_{3}h{4}.TIF",date.Year,
                 date.Month,
                 date.Day,
                 date.Hour,
