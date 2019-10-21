@@ -170,7 +170,7 @@ namespace ExperimentControl.ExperimentControl.Experiments
         {
             Running = true;
             StartTimer();
-
+            nikonCamera.PowerOn();
             #region Log
             DateTime date = DateTime.Now;
             string str = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}:",
@@ -197,6 +197,7 @@ namespace ExperimentControl.ExperimentControl.Experiments
         public void Stop()
         {
             Running = false;
+            nikonCamera.PowerOff();
             #region log
 
             DateTime date = DateTime.Now;
