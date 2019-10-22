@@ -5,17 +5,18 @@ Pin allocation:
 	If you want to change the pin allocation, or add one cable, use the App.Config file
 
 	P0.0/USER1: Shutter
-	P0.1/USER2: lamp control, connected to IN 1 on the relay
-	P0.2: Red lamp control, connected to IN2 on the relay
+	P0.1/USER2: lamp control, connected to IN 1 on the relay box
+	P0.2: Red lamp control, connected to IN3 on the secondary relay
 	P0.3: Intervalometer, connected to IN1 and IN2 on the secondary relay
 	P0.4: Traverse dir
 	P0.5: Traverse pulse
+	P0.6: Nikon power relay, connected to IN2 on the relay box 
 
 
 
 Files Gestion:
 
-	Generate a folder Date_Experiment in Document/ExperimentResults -if needed change it in App.Config (then everything is in this folder)
+	Generate a folder Date_Experiment in the folder given in App.Config -if needed change it in App.Config (then everything is in this folder)
 	Generate a log.txt
 	Read Setting.txt for the Pt Grey Camera, number need to be given as float (even integer must take a .)
 	Create a folder TankPictures where all the pictures of the tank will be saved im_date.bmp, idem with FlowVisualisation
