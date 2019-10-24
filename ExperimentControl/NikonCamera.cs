@@ -41,6 +41,7 @@ namespace ExperimentControl.ExperimentControl
             int count = 0;
             while (!ok && count<10)
             {
+                count++;
                 Thread.Sleep(500);
                 ok = deviceManager.ConnectToCamera();
             }

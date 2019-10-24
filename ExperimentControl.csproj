@@ -159,6 +159,7 @@
     <Compile Include="ExperimentControl\Experiments\Experiment3.cs" />
     <Compile Include="ExperimentControl\Experiments\Experiment1.cs" />
     <Compile Include="ExperimentControl\Experiments\Experiment2.cs" />
+    <Compile Include="ExperimentControl\Experiments\Experiment4.cs" />
     <Compile Include="ExperimentControl\Experiments\IControl.cs" />
     <Compile Include="ExperimentControl\Form2.cs">
       <SubType>Form</SubType>

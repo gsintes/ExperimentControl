@@ -49,6 +49,9 @@ namespace ExperimentControl.ExperimentControl
                     case Experiments.Experiments.Exp3:
                         control = new Experiments.Experiment3();
                         break;
+                    case Experiments.Experiments.Exp4:
+                        control = new Experiments.Experiment4();
+                        break;
                 }
                 refreshTimer.Start();
             }
@@ -56,8 +59,9 @@ namespace ExperimentControl.ExperimentControl
             {
                 MessageBox.Show("The setting file doesn't respect the format, modify it and retry.", "Error", MessageBoxButtons.OK);
             }
-            catch (NoCameraDetectedException)
+            catch (NoCameraDetectedException )
             {
+                
                 MessageBox.Show("No camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
             }
             this.Name = exp.ToString();

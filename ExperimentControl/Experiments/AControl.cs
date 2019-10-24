@@ -41,7 +41,7 @@ namespace ExperimentControl.ExperimentControl.Experiments
 
             timerNikon = new System.Timers.Timer
             {
-                Interval = 2 * 3600 * 1000, //we create a timer to reinitialize the nikon to avoid bugs
+                Interval = 2 * 3600 * 1000 + 15000, //we create a timer to reinitialize the nikon to avoid bugs
                 Enabled = false,
                 AutoReset = true
             };

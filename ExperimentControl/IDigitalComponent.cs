@@ -6,7 +6,13 @@
         {
             get;
         }
+        /// <summary>
+        /// TurnOn the component
+        /// </summary>
         void TurnOn();
+        /// <summary>
+        /// TurnOff the component
+        /// </summary>
         void TurnOff();
     }
 }
