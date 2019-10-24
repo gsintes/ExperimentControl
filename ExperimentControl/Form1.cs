@@ -59,10 +59,20 @@ namespace ExperimentControl.ExperimentControl
             {
                 MessageBox.Show("The setting file doesn't respect the format, modify it and retry.", "Error", MessageBoxButtons.OK);
             }
-            catch (NoCameraDetectedException )
+            catch (NoCameraDetectedException e)
             {
-                
-                MessageBox.Show("No camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
+                if (e.Source.Equals("Nikon"))
+                {
+                    MessageBox.Show("No Nikon camera detected. Check if it is on.", "Error", MessageBoxButtons.OK);
+                }
+                else if (e.Source.Equals("PointGrey"))
+                {
+                    MessageBox.Show("No Point Grey camera detected. Try force the IP in FlyCap2.", "Error", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    MessageBox.Show("No camera detected.", "Error", MessageBoxButtons.OK);
+                }
             }
             this.Name = exp.ToString();
             this.Text = exp.ToString();

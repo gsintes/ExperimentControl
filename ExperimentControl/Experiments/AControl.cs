@@ -53,15 +53,7 @@ namespace ExperimentControl.ExperimentControl.Experiments
             lampControl = new RelayBoxComponent(ConfigurationManager.AppSettings["LampControl"], "Main lamp");
             redLampControl = new ComponentControl(ConfigurationManager.AppSettings["RedLampControl"], "Red Lamp");
             traverse = new Traverse();
-            try
-            {
-                nikonCamera = new NikonCamera();
-            }
-            catch (NoCameraDetectedException)
-            {
-                MessageBox.Show("No Nikon camera detected. Check if it is on.", "Error", MessageBoxButtons.OK);
-            }
-
+            nikonCamera = new NikonCamera();
 
             try
             {

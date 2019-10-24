@@ -47,7 +47,7 @@ namespace ExperimentControl.ExperimentControl
             }
             if (!ok)
             {
-                throw new NoCameraDetectedException();
+                throw new NoCameraDetectedException { Source = "Nikon" };
             }
         
             deviceManager.SelectedCameraDevice.CaptureInSdRam = true;

@@ -30,7 +30,7 @@ namespace ExperimentControl.ExperimentControl
 
             if (numCameras == 0)
             {
-                throw new NoCameraDetectedException();
+                throw new NoCameraDetectedException { Source = "PointGrey" };
             }
 
             ManagedPGRGuid guid = busMgr.GetCameraFromIndex(0); //If there is more than 1 camera, we take the first one
