@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Configuration;
 using Nest;
+using System.Threading;
 
 namespace ExperimentControl.ExperimentControl
 {
@@ -28,10 +29,11 @@ namespace ExperimentControl.ExperimentControl
             using (_ = File.Create("log.txt"))
             {
             }
-           
+            //Traverse traverse = new Traverse();
+            //traverse.Move(250, Direction.Down, 20);
+            LinearStage linearStage = new LinearStage();           
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
             Application.Run(new ExperimentControl.Form2());
         }
     }

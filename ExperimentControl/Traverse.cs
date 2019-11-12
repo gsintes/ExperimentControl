@@ -92,6 +92,34 @@ namespace ExperimentControl.ExperimentControl
             int pause = Convert.ToInt32(1000 * STEP / speed);
             MoveStep(nbStep, dir, pause);
         }
+        public void MoveTrapeze(double distance, Direction dir, double speed, double r)
+        {
+            SetDirection(dir);
+            int nbStep = Convert.ToInt32(distance / STEP); 
+            int[] pause = new int[nbStep];
+            double v;
+            for (int i = 0; i < nbStep; i++)
+            {
+                if (i <(1-r)*nbStep/2)
+                {
+                    v = (i+1) * speed / ((1 - r) * nbStep / 2);
+                }
+                else if (i > (1 - r) * nbStep / 2 && i<(r+1)/2)
+                {
+                    v = speed;
+                }
+                else
+                {
+                    v = speed - (i - ((1 + r) * nbStep / 2)) * speed / ((1 - r) * nbStep / 2);
+                }
+                pause[i] = Convert.ToInt32(1000 * STEP / v);
+            }
+            for (int i=0; i<nbStep; i++)
+            {
+                Step();
+                Thread.Sleep(pause[i]);
+            }
+        }
 
         #endregion
     }
