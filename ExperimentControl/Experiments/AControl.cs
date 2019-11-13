@@ -21,7 +21,7 @@ namespace ExperimentControl.ExperimentControl.Experiments
         protected readonly PtGreyCamera ptGreyCamera;
         protected  NikonCamera nikonCamera;
         private readonly System.Timers.Timer timerNikon;
-
+        protected readonly LinearStage linearStage;
 
 
 
