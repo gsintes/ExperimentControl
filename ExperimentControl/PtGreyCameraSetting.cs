@@ -24,7 +24,7 @@ namespace ExperimentControl.ExperimentControl
         #endregion
 
         #region Constructors
-        public PtGreyCameraSetting(float shutter = 0.511f, float frameRate = 35, float gain = 0, float brightness = 0)
+        public PtGreyCameraSetting(float shutter = 19.173f, float frameRate = 35, float gain = 0, float brightness =0f )
         {
             this.shutter = shutter;
             this.frameRate = frameRate;
@@ -77,7 +77,7 @@ namespace ExperimentControl.ExperimentControl
             }
             if(!shutterDone)
             {
-                this.shutter = 0.511f;
+                this.shutter = 19.173f;
             }
             if(!frDone)
             {

@@ -11,13 +11,13 @@
       <h2>List of experiements</h2>
       <p>
           Go to: <br />
-                 <ul>
-                     <li><a href="#exp1">Experiment 1</a></li>
-                     <li><a href="#exp2">Experiment 2</a></li>
-                     <li><a href="#exp3">Experiment 3</a></li>
-                     <li><a href="#exp4">Experiment 4</a></li>
+          <ul>
+              <li><a href="#exp1">Experiment 1</a></li>
+              <li><a href="#exp2">Experiment 2</a></li>
+              <li><a href="#exp3">Experiment 3</a></li>
+              <li><a href="#exp4">Experiment 4</a></li>
 
-                 </ul>
+          </ul>
       </p>
       <h2>Experiment descriptions</h2>
       <h3 id="exp1">Experiment 1</h3>
@@ -28,6 +28,7 @@
           <li>Nikon Camera: Used for the PIV</li>
           <li>Point Grey Camera: Used to take a picture of the tank</li>
           <li>Traverse: Not used</li>
+          <li>Linear stage: Not used</li>
       </ul>
       <p>Created to control the main experiment, there are two timers: 12h and 1h. Every 12h, we switch between day and night. Every hour, we take first a picture of the tank with the Point Grtey, then a visualisation of the flow, ie 10 pictures of the laser sheet with the Nikon with 1s pause. The is no movement of the tank.</p>
 
@@ -39,6 +40,7 @@
           <li>Nikon Camera: Used for the tank picture (change objective to the vivitar)</li>
           <li>Point Grey Camera: Not used</li>
           <li>Traverse: Not used</li>
+          <li>Linear stage: Not used</li>
       </ul>
       <p>Created to control the test experiment in the small tank and <b>in the dark</b>, there are two timers: 1min and 10min. During the first hour we take one picture of the tank every minute and then every 10min. The tank picutres are taken using the Nikon camera and the red lamp. </p>
 
@@ -50,6 +52,7 @@
           <li>Nikon Camera: Used for the tank picture (change objective to the vivitar)</li>
           <li>Point Grey Camera: Not used</li>
           <li>Traverse: Not used</li>
+          <li>Linear stage: Not used</li>
       </ul>
       <p>Created to control the test experiment in the small tank and <b>in the dark</b>, there is one 30s timer.We take one picture of the tank every 30s. The tank picutres are taken using the Nikon camera and the red lamp. </p>
 
@@ -61,7 +64,20 @@
           <li>Nikon Camera: Used for the flow visualization</li>
           <li>Point Grey Camera: Used for the tank picture</li>
           <li>Traverse: Used</li>
+          <li>Linear stage: Not used</li>
       </ul>
       <p>Created to control the test experiment in the small tank and <b>in the dark</b>, there is one 1min timer.We take one picture of the tank every minute and a flow visualization every 10min, to do so we move the tank with the traverse twice to scan the whole tank and then go back to the Point Grey height. The tank picutres are taken using the Point Grey camera and the red lamp. The flow visualisation is taken  using the laser and Nikon camera</p>
+
+      <h3 id="exp5">Experiment 5</h3>
+      <ul>
+          <li>Laser: Used</li>
+          <li>Main lamp: Not used</li>
+          <li>Red lamp: Used for the tank picture</li>
+          <li>Nikon Camera: Used for the flow visualization</li>
+          <li>Point Grey Camera: Used for the tank picture</li>
+          <li>Traverse: Not used</li>
+          <li>Linear stage: Used</li>
+      </ul>
+      <p>Created to control the test experiment in the small tank and <b>in the dark</b>, there is one 30s timer.We take one picture of the tank 30S (except when we skip picture for flow visualisation) and a flow visualization every 10min, to do so we move the tank with the LINEAR STAGE twice to scan the whole tank and then go back to the Point Grey height. The tank picutres are taken using the Point Grey camera and the red lamp. The flow visualisation is taken  using the laser and Nikon camera</p>
   </body>
 </html>

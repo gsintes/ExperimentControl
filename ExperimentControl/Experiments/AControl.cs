@@ -3,6 +3,7 @@ using System.Threading;
 using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace ExperimentControl.ExperimentControl.Experiments
 {
@@ -21,7 +22,8 @@ namespace ExperimentControl.ExperimentControl.Experiments
         protected readonly PtGreyCamera ptGreyCamera;
         protected  NikonCamera nikonCamera;
         private readonly System.Timers.Timer timerNikon;
-        protected readonly LinearStage linearStage;
+        protected LinearStage linearStage;
+        //protected Dictionary<String,bool> usage;
 
 
 
@@ -36,7 +38,7 @@ namespace ExperimentControl.ExperimentControl.Experiments
         /// <exception cref="NoCameraDetectedException">Thrown when there isn't any camera detected</exception>
         public AControl()
         {
-
+            
             SetTimer();
 
             timerNikon = new System.Timers.Timer
@@ -222,12 +224,12 @@ namespace ExperimentControl.ExperimentControl.Experiments
         protected abstract void TankPicture();
 
         ///<summary>
-        ///Open the laser shutter and take 10 picutres with the Nikon to visualize the flow and then close the shutter.
+        ///Open the laser shutter and take 5 picutres with the Nikon to visualize the flow and then close the shutter.
         /// </summary>
         protected void FlowVisualization()
         {
             shutterControl.TurnOn();
-            Thread.Sleep(2000);//wait 2s to be sure it is stable
+            Thread.Sleep(500);//wait to be sure it is open
             try
             {
                 for (int i = 0; i < 10; i++)
@@ -268,8 +270,6 @@ namespace ExperimentControl.ExperimentControl.Experiments
             }
             #endregion
             shutterControl.TurnOff();
-           
-
         }
 
         #endregion

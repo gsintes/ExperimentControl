@@ -52,6 +52,10 @@ namespace ExperimentControl.ExperimentControl
                     case Experiments.Experiments.Exp4:
                         control = new Experiments.Experiment4();
                         break;
+                    case Experiments.Experiments.Exp5:
+                        control = new Experiments.Experiment5();
+                        break;
+
                 }
                 refreshTimer.Start();
             }

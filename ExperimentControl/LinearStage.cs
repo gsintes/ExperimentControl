@@ -6,6 +6,7 @@ using Thorlabs.MotionControl.Benchtop.StepperMotorCLI;
 using Thorlabs.MotionControl.DeviceManagerCLI;
 using Thorlabs.MotionControl.GenericMotorCLI.ControlParameters;
 using System.Configuration;
+using Thorlabs.MotionControl.GenericMotorCLI;
 
 namespace ExperimentControl.ExperimentControl
 {
@@ -206,34 +207,61 @@ namespace ExperimentControl.ExperimentControl
         /// Home the device
         /// </summary>
         private void Home( )
-        { 
-            channel.Home(60000);  
+        {
+            channel.Home(240000);
+            #region Log
+            DateTime date1 = DateTime.Now;
+            string str1 = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: Stage homed. ",
+            date1.Year,
+            date1.Month,
+            date1.Day,
+            date1.Hour,
+            date1.Minute,
+            date1.Second);
+            using StreamWriter writer = new StreamWriter("log.txt", true);
+            writer.WriteLine(str1);
+            #endregion
         }
+
         /// <summary>
         /// Move the device to the given position
         /// </summary>
         /// <param name="position">Position in mm</param>
         public void Move(decimal position)
         {
+
             try
             {
                 channel.MoveTo(position, 60000);
-            }
-            catch (Exception ex)
-            {
                 #region Log
                 DateTime date1 = DateTime.Now;
-                string str1 = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR: ",
+                string str1 = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: Stage moved to {6:00}. ",
                 date1.Year,
                 date1.Month,
                 date1.Day,
                 date1.Hour,
                 date1.Minute,
-                date1.Second) + ex.Message+ " Failed to move to position, deviced ask to be homed";
+                date1.Second,
+                position);
                 using StreamWriter writer = new StreamWriter("log.txt", true);
                 writer.WriteLine(str1);
                 #endregion
-                Home();
+            }
+            catch (Exception ex)
+            {
+                #region Log
+                DateTime date1 = DateTime.Now;
+                string str1 = string.Format("{0}-{1}-{2}, {3:00}:{4:00}:{5:00}: ERROR moving stage. ",
+                date1.Year,
+                date1.Month,
+                date1.Day,
+                date1.Hour,
+                date1.Minute,
+                date1.Second,
+                position)+ex.Message;
+                using StreamWriter writer = new StreamWriter("log.txt", true);
+                writer.WriteLine(str1);
+                #endregion
             }
         }
 

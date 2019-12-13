@@ -155,13 +155,27 @@ namespace ExperimentControl.ExperimentControl
         }
         private void DeviceManager_CameraDisconnected(ICameraDevice cameraDevice)
         {
-            DateTime date = DateTime.Now;
-            string str = string.Format("{0}-{1:00}-{2:00},{3:00}:{4:00}: Nikon Camera disconnected",
-            date.Year,
-            date.Month,
-            date.Day, date.Hour, date.Minute);
-            using StreamWriter writerL = new StreamWriter("log.txt", true);
-            writerL.WriteLine(str);
+            try
+            {
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1:00}-{2:00}, {3:00}:{4:00}: Nikon Camera disconnected",
+                date.Year,
+                date.Month,
+                date.Day, date.Hour, date.Minute);
+                using StreamWriter writerL = new StreamWriter("log.txt", true);
+                writerL.WriteLine(str);
+            }
+            catch (IOException)
+            {
+                Thread.Sleep(5000);
+                DateTime date = DateTime.Now;
+                string str = string.Format("{0}-{1:00}-{2:00}, {3:00}:{4:00}: Nikon Camera disconnected",
+                date.Year,
+                date.Month,
+                date.Day, date.Hour, date.Minute);
+                using StreamWriter writerL = new StreamWriter("log.txt", true);
+                writerL.WriteLine(str);
+            }
         }
 
         private void DeviceManager_CameraConnected(ICameraDevice cameraDevice)

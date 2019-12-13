@@ -2,8 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Configuration;
-using Nest;
-using System.Threading;
+
 
 namespace ExperimentControl.ExperimentControl
 {
@@ -22,15 +21,19 @@ namespace ExperimentControl.ExperimentControl
                 date.Year,
                 date.Month,
                 date.Day);
-            
+            string dirZero = dirName;
+            int i = 1;
+            while (Directory.Exists(dirName))
+            {
+                dirName = dirZero + string.Format("_{0}", i);
+                i++;
+            }
             Directory.CreateDirectory(dirName);
             Directory.SetCurrentDirectory(dirName);
             Directory.CreateDirectory("TankPictures");
             using (_ = File.Create("log.txt"))
             {
             }
-           
-            //LinearStage linearStage = new LinearStage();           
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new ExperimentControl.Form2());
