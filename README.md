@@ -1,5 +1,11 @@
 # ExperimentControl
-
+Dependencies:
+	FlyCapture2Managedd_v140
+	NationalInstruments.DAQmx
+	Thorlabs.MotionControl.Benchtop.StepperMotorCLI
+	Thorlabs.MotionControl.Benchtop.StepperMotorCLI
+	Thorlabs.MotionControl.GenericMotorCLI
+	DigiCamControl (NuGet)
 Pin allocation:
 
 	If you want to change the pin allocation, or add one cable, use the App.Config file
